@@ -1,6 +1,39 @@
-﻿namespace SportReserva.data
+﻿
+using Microsoft.EntityFrameworkCore;
+using SportReserva.Models.Entities;
+
+namespace SportReserva.Data
 {
-    public class Conexion
+    public class Conexion : DbContext
     {
+        public Conexion(DbContextOptions<Conexion> options) : base(options)
+        {
+        }
+
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Cancha> Canchas { get; set; }
+        public DbSet<Horario> Horarios { get; set; }
+        public DbSet<Reserva> Reservas { get; set; }
+        public DbSet<Pago> Pagos { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Usuario>().ToTable("Usuario");
+            modelBuilder.Entity<Cliente>().ToTable("Cliente");
+            modelBuilder.Entity<Cancha>().ToTable("Cancha");
+            modelBuilder.Entity<Horario>().ToTable("Horario");
+            modelBuilder.Entity<Reserva>().ToTable("Reserva");
+            modelBuilder.Entity<Pago>().ToTable("Pago");
+
+            modelBuilder.Entity<Usuario>().HasKey(u => u.IdUsuario);
+            modelBuilder.Entity<Cliente>().HasKey(c => c.IdCliente);
+            modelBuilder.Entity<Cancha>().HasKey(c => c.IdCancha);
+            modelBuilder.Entity<Horario>().HasKey(h => h.IdHorario);
+            modelBuilder.Entity<Reserva>().HasKey(r => r.IdReserva);
+            modelBuilder.Entity<Pago>().HasKey(p => p.IdPago);
+        }
     }
 }
