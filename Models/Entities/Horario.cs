@@ -14,5 +14,7 @@ namespace SportReserva.Models.Entities
         [Required]
         [StringLength(20)]
         public string Estado { get; set; } = string.Empty;
+
+        public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
     }
 }

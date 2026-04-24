@@ -22,5 +22,7 @@ namespace SportReserva.Models.Entities
         [Required]
         [StringLength(20)]
         public string Estado { get; set; } = string.Empty;
+
+        public Cliente? Cliente { get; set; }
     }
 }

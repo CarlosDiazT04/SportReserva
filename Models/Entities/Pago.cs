@@ -22,5 +22,7 @@ namespace SportReserva.Models.Entities
         public string EstadoPago { get; set; } = string.Empty;
 
         public DateTime? FechaPago { get; set; }
+
+        public Reserva? Reserva { get; set; }
     }
 }

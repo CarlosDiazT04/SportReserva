@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SportReserva.Models.Entities;
 
 namespace SportReserva.Data
@@ -34,6 +33,49 @@ namespace SportReserva.Data
             modelBuilder.Entity<Horario>().HasKey(h => h.IdHorario);
             modelBuilder.Entity<Reserva>().HasKey(r => r.IdReserva);
             modelBuilder.Entity<Pago>().HasKey(p => p.IdPago);
+
+            modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.NombreUsuario)
+                .IsUnique();
+
+            modelBuilder.Entity<Cliente>()
+                .HasIndex(c => c.DNI)
+                .IsUnique();
+
+            modelBuilder.Entity<Cliente>()
+                .HasOne(c => c.Usuario)
+                .WithOne(u => u.Cliente)
+                .HasForeignKey<Cliente>(c => c.IdUsuario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Cliente)
+                .WithMany(c => c.Reservas)
+                .HasForeignKey(r => r.IdCliente)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Cancha)
+                .WithMany(c => c.Reservas)
+                .HasForeignKey(r => r.IdCancha)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reserva>()
+                .HasOne(r => r.Horario)
+                .WithMany(h => h.Reservas)
+                .HasForeignKey(r => r.IdHorario)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Pago>()
+                .HasOne(p => p.Reserva)
+                .WithOne(r => r.Pago)
+                .HasForeignKey<Pago>(p => p.IdReserva)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reserva>()
+                .HasIndex(r => new { r.IdCancha, r.FechaReserva, r.IdHorario })
+                .IsUnique()
+                .HasFilter("[EstadoReserva] <> 'Cancelada'");
         }
     }
 }

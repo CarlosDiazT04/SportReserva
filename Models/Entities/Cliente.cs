@@ -26,5 +26,9 @@ namespace SportReserva.Models.Entities
         public string Correo { get; set; } = string.Empty;
 
         public int IdUsuario { get; set; }
+
+        public Usuario? Usuario { get; set; }
+
+        public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
     }
 }
