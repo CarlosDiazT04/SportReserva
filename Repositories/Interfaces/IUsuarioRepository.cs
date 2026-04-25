@@ -1,6 +1,15 @@
-﻿namespace SportReserva.Repositories.Interfaces
+﻿using SportReserva.Models.DTOs;
+using System.Collections.Generic;
+
+namespace SportReserva.Repositories.Interfaces
 {
-    public class IUsuarioRepository
+    public interface IUsuarioRepository
     {
+        IEnumerable<UsuarioDTO> ObtenerTodos();
+        UsuarioDTO ObtenerPorId(int id);
+        UsuarioDTO ValidarLogin(string username, string clave);
+        void Agregar(UsuarioDTO usuario);
+        void Actualizar(UsuarioDTO usuario);
+        void Desactivar(int id);
     }
 }

@@ -1,6 +1,10 @@
-﻿namespace SportReserva.Repositories.Interfaces
+﻿using SportReserva.Models.DTOs;
+using System.Collections.Generic;
+
+namespace SportReserva.Repositories.Interfaces
 {
-    public class IReporteRepository
+    public interface IReporteRepository
     {
+        IEnumerable<ReporteReservaDTO> GenerarReporteGeneral();
     }
 }

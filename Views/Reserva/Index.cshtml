@@ -1,0 +1,44 @@
+@* Asegúrate de que este sea el nombre correcto de tu DTO para Reservas *@
+@model IEnumerable<SportReserva.Models.DTOs.ReservaDTO>
+@{ 
+    ViewData["Title"] = "Consultar Reservas"; 
+}
+
+<div class="container mt-4">
+    <h2>Consultar Reservas</h2>
+
+    <table class="table table-hover mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Fecha y Hora Registro</th>
+                <th>Fecha Reservada</th>
+                <th>Precio Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any()) {
+                <tr><td colspan="6" class="text-center">No hay reservas para mostrar.</td></tr>
+            }
+            @foreach(var item in Model) {
+            <tr>
+                <td>@item.IdReserva</td>
+                <td>@item.FechaRegistro.ToString("g")</td>
+                <td>@item.FechaReserva.ToShortDateString()</td>
+                <td>@item.PrecioTotal.ToString("C")</td>
+                <td><span class="badge bg-info">@item.EstadoReserva</span></td>
+                <td>
+                    <form asp-action="Confirm" asp-route-id="@item.IdReserva" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-success" @(item.EstadoReserva == "Cancelada" ? "disabled" : "")>Confirmar</button>
+                    </form>
+                    <form asp-action="Cancel" asp-route-id="@item.IdReserva" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">Cancelar</button>
+                    </form>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

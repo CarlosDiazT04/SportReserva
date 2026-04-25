@@ -1,0 +1,42 @@
+@model IEnumerable<SportReserva.Models.DTOs.ReporteReservaDTO>
+@{ 
+    ViewData["Title"] = "Reportes de Reservas e Ingresos"; 
+}
+
+<div class="container mt-4">
+    <h2>Reportes de Ingresos y Reservas</h2>
+
+    <div class="alert alert-info mt-3">
+        <strong>Total Generado:</strong> @Model.Sum(r => r.PrecioTotal).ToString("C")
+    </div>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Cliente</th>
+                <th>Cancha</th>
+                <th>Deporte</th>
+                <th>Fecha Reserva</th>
+                <th>Horario</th>
+                <th>Ingreso Total</th>
+                <th>Estado Pago</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any()) {
+                <tr><td colspan="7" class="text-center">No hay datos en el reporte.</td></tr>
+            }
+            @foreach(var item in Model) {
+            <tr>
+                <td>@item.Cliente</td>
+                <td>@item.Cancha</td>
+                <td>@item.TipoDeporte</td>
+                <td>@item.FechaReserva.ToShortDateString()</td>
+                <td>@item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")</td>
+                <td>@item.PrecioTotal.ToString("C")</td>
+                <td>@item.EstadoPago</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

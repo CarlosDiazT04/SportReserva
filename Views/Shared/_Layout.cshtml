@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SportReserva</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --pitch-green: #1e5128; /* Verde gramado */
+            --turf-light: #4e944f;
+            --stadium-dark: #191a19;
+            --white-lines: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+        }
+
+        h1, h2, h3, .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Navbar estilo Estadio de Noche */
+        .navbar-sport {
+            background-color: var(--stadium-dark);
+            border-bottom: 4px solid var(--pitch-green);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: var(--white-lines) !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--turf-light) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Botones estilo Fichaje */
+        .btn-primary {
+            background-color: var(--pitch-green);
+            border: none;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--turf-light);
+        }
+
+        /* Contenedor principal con sombra suave */
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-top: 20px;
+            border-left: 5px solid var(--pitch-green);
+        }
+
+        footer {
+            background-color: var(--stadium-dark);
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-sport py-3">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Login" asp-action="Index">
+                    <i class="fa-solid fa-circle-dot me-2"></i>SPORTRESERVA
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1 ms-4">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Reserva" asp-action="Index">
+                                <i class="fa-solid fa-calendar-check me-1"></i> Partidos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Cancha" asp-action="Index">
+                                <i class="fa-solid fa-field-hockey me-1"></i> Nuestras Canchas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Reporte" asp-action="Index">
+                                <i class="fa-solid fa-chart-line me-1"></i> Estadísticas
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light btn-sm rounded-pill px-4" asp-controller="Login" asp-action="Index">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="main-card">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">&copy; @DateTime.Now.Year - SportReserva - <span class="text-success">Estado del Campo: Óptimo</span></p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

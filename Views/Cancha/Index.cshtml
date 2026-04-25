@@ -1,0 +1,33 @@
+<div class="row">
+    @foreach (var cancha in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0 border-bottom border-4 @(cancha.Estado == "Disponible" ? "border-success" : "border-warning")">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-futbol fa-3x mb-3 @(cancha.Estado == "Disponible" ? "text-success" : "text-muted")"></i>
+                    
+                    <h4 class="card-title text-uppercase font-weight-bold">@cancha.Nombre</h4>
+                    <span class="badge @(cancha.Estado == "Disponible" ? "bg-success" : "bg-warning text-dark") mb-2">
+                        @cancha.Estado
+                    </span>
+                    
+                    <p class="text-muted small mt-2">@cancha.Descripcion</p>
+                    
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li><strong>Formato:</strong> @cancha.TipoDeporte</li>
+                        <li><strong>Tarifa:</strong> S/ @cancha.PrecioHora.ToString("0.00") / hr</li>
+                    </ul>
+                    
+                    @if (cancha.Estado == "Disponible")
+                    {
+                        <button class="btn btn-outline-success w-100 fw-bold">Ver Horarios</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-outline-secondary w-100" disabled>En Mantenimiento</button>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
