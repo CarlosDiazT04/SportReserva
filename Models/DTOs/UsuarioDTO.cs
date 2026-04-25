@@ -9,5 +9,6 @@
         public string Rol { get; set; } = string.Empty;
 
         public string Estado { get; set; } = string.Empty;
+        public string Clave { get; set; } = string.Empty;
     }
 }

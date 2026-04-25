@@ -4,14 +4,16 @@
 }
 
 <div class="container mt-4">
-    <h2>Reportes de Ingresos y Reservas</h2>
+    <h2 class="text-uppercase fw-bold"><i class="fa-solid fa-receipt text-success me-2"></i>Reportes de Ingresos y Reservas</h2>
 
-    <div class="alert alert-info mt-3">
-        <strong>Total Generado:</strong> @Model.Sum(r => r.PrecioTotal).ToString("C")
+    <div class="alert alert-success mt-3 shadow-sm border-start border-4 border-success">
+        <h4 class="mb-0">
+            <strong>Total Generado:</strong> S/ @Model.Sum(r => r.PrecioTotal).ToString("N2")
+        </h4>
     </div>
 
-    <table class="table table-bordered mt-3">
-        <thead class="table-dark">
+    <table class="table table-hover mt-3 shadow-sm">
+        <thead class="table-dark text-uppercase">
             <tr>
                 <th>Cliente</th>
                 <th>Cancha</th>
@@ -22,19 +24,23 @@
                 <th>Estado Pago</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white">
             @if (!Model.Any()) {
-                <tr><td colspan="7" class="text-center">No hay datos en el reporte.</td></tr>
+                <tr><td colspan="7" class="text-center py-4 text-muted">No hay datos en el reporte para esta temporada.</td></tr>
             }
             @foreach(var item in Model) {
             <tr>
-                <td>@item.Cliente</td>
+                <td class="fw-bold">@item.Cliente</td>
                 <td>@item.Cancha</td>
-                <td>@item.TipoDeporte</td>
+                <td><span class="badge bg-light text-dark border">@item.TipoDeporte</span></td>
                 <td>@item.FechaReserva.ToShortDateString()</td>
-                <td>@item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")</td>
-                <td>@item.PrecioTotal.ToString("C")</td>
-                <td>@item.EstadoPago</td>
+                <td><i class="fa-regular fa-clock me-1"></i>@item.HoraInicio.ToString(@"hh\:mm") - @item.HoraFin.ToString(@"hh\:mm")</td>
+                <td class="fw-bold text-success">S/ @item.PrecioTotal.ToString("N2")</td>
+                <td>
+                    <span class="badge @(item.EstadoPago == "Pagado" ? "bg-success" : "bg-danger")">
+                        @item.EstadoPago
+                    </span>
+                </td>
             </tr>
             }
         </tbody>
