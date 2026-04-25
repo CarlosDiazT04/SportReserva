@@ -7,7 +7,7 @@ namespace SportReserva.Repositories.Interfaces
     {
         IEnumerable<UsuarioDTO> ObtenerTodos();
         UsuarioDTO ObtenerPorId(int id);
-        UsuarioDTO ValidarLogin(string username, string clave);
+        UsuarioDTO? ValidarLogin(string username, string clave);
         void Agregar(UsuarioDTO usuario);
         void Actualizar(UsuarioDTO usuario);
         void Desactivar(int id);

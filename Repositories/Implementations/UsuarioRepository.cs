@@ -17,11 +17,9 @@ namespace SportReserva.Repositories.Implementations
 
         public UsuarioDTO? ValidarLogin(string username, string clave)
         {
-            // 1. Buscamos en tu tabla real usando Entity Framework
             var usuarioDb = _context.Usuarios
                 .FirstOrDefault(u => u.NombreUsuario == username && u.Clave == clave);
             
-            // 2. Si no existe, devolvemos null
             if (usuarioDb == null) return null;
 
             // 3. Si existe, lo empaquetamos en el DTO para el Controlador
