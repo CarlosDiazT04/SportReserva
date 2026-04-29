@@ -1,0 +1,59 @@
+@model SportReserva.Models.DTOs.RegistroDTO
+@{
+    ViewData["Title"] = "Registro de Cliente";
+}
+
+<div class="container mt-5" style="max-width: 650px;">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white border-0 pt-4 pb-2 text-center rounded-top-4">
+            <h4 class="fw-bold text-uppercase text-success"><i class="fa-solid fa-user-plus me-2"></i>Crear Cuenta</h4>
+            <p class="text-muted">Regístrate para reservar nuestras canchas deportivas.</p>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Registro" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                
+                <h6 class="fw-bold text-muted text-uppercase mb-3 border-bottom pb-2">Datos de Acceso</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NombreUsuario" class="form-label fw-bold small">Usuario</label>
+                        <input asp-for="NombreUsuario" class="form-control" placeholder="Ej: jperez" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Clave" class="form-label fw-bold small">Contraseña</label>
+                        <input asp-for="Clave" type="password" class="form-control" required />
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-muted text-uppercase mb-3 mt-4 border-bottom pb-2">Datos Personales</h6>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Nombres" class="form-label fw-bold small">Nombres</label>
+                        <input asp-for="Nombres" class="form-control" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Apellidos" class="form-label fw-bold small">Apellidos</label>
+                        <input asp-for="Apellidos" class="form-control" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="DNI" class="form-label fw-bold small">DNI</label>
+                        <input asp-for="DNI" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Telefono" class="form-label fw-bold small">Celular</label>
+                        <input asp-for="Telefono" class="form-control" required />
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <label asp-for="Correo" class="form-label fw-bold small">Correo</label>
+                        <input asp-for="Correo" type="email" class="form-control" required />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success fw-bold w-100 py-2 mb-2">Completar Registro</button>
+                <a asp-action="Index" class="btn btn-outline-secondary fw-bold w-100 py-2">Volver al Inicio de Sesión</a>
+            </form>
+        </div>
+    </div>
+</div>

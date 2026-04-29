@@ -28,6 +28,7 @@
     {
         var canchas = (IEnumerable<SportReserva.Models.DTOs.CanchaDTO>)ViewBag.Canchas;
         var horarios = (IEnumerable<SportReserva.Models.DTOs.HorarioDTO>)ViewBag.Horarios;
+        var reservasOcupadas = (IEnumerable<SportReserva.Models.DTOs.ReservaDTO>)ViewBag.ReservasOcupadas;
         var fechaSeleccionada = Context.Request.Query["fecha"].ToString();
         if (string.IsNullOrEmpty(fechaSeleccionada)) fechaSeleccionada = DateTime.Now.ToString("yyyy-MM-dd");
 
@@ -60,7 +61,15 @@
                                     <div class="d-flex flex-wrap gap-2">
                                         @foreach (var horario in horarios)
                                         {
-                                            @if (User.IsInRole("Admin"))
+                                            bool estaOcupado = reservasOcupadas.Any(r => r.IdCancha == cancha.IdCancha && r.IdHorario == horario.IdHorario);
+
+                                            if (estaOcupado)
+                                            {
+                                                <span class="btn btn-danger btn-sm fw-bold disabled" title="Horario Ocupado">
+                                                    <i class="fa-solid fa-lock me-1"></i> @horario.HoraInicio.ToString(@"hh\:mm") - @horario.HoraFin.ToString(@"hh\:mm")
+                                                </span>
+                                            }
+                                            else if (User.IsInRole("Admin"))
                                             {
                                                 <span class="btn btn-outline-secondary btn-sm fw-bold disabled" title="Modo Admin: Solo visualización">
                                                     @horario.HoraInicio.ToString(@"hh\:mm") - @horario.HoraFin.ToString(@"hh\:mm")

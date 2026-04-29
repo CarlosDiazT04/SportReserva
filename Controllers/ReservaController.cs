@@ -42,12 +42,19 @@ namespace SportReserva.Controllers
         // GET: Para que el cliente busque disponibilidad por fecha/deporte
         public IActionResult Disponibilidad(DateTime? fecha, string deporte)
         {
-         
+            DateTime targetDate = fecha ?? DateTime.Now.Date;
             ViewBag.Horarios = _horarioRepo.ObtenerTodos();
             ViewBag.Canchas = string.IsNullOrEmpty(deporte) ? 
                               _canchaService.ObtenerTodas().ToList() : 
                               _canchaService.ObtenerTodas().Where(c => c.TipoDeporte == deporte).ToList();
             
+            // Cruce de reservas: Filtramos las que coincidan con la fecha y no estén canceladas
+            var reservasActivas = _reservaService.ObtenerTodas()
+                .Where(r => r.FechaReserva.Date == targetDate && r.EstadoReserva != "Cancelada")
+                .ToList();
+            
+            ViewBag.ReservasOcupadas = reservasActivas;
+
             return View();
         }
 
@@ -94,14 +101,28 @@ namespace SportReserva.Controllers
 
             if (ModelState.IsValid)
             {
-                bool registroExitoso = _reservaService.RegistrarReserva(reservaDTO);
-                if (registroExitoso)
+                // Cruce de reservas (Backend): Validamos que no exista otra reserva activa en ese turno
+                bool existeCruce = _reservaService.ObtenerTodas()
+                    .Any(r => r.IdCancha == reservaDTO.IdCancha 
+                           && r.FechaReserva.Date == reservaDTO.FechaReserva.Date 
+                           && r.IdHorario == reservaDTO.IdHorario 
+                           && r.EstadoReserva != "Cancelada");
+
+                if (existeCruce)
                 {
-                    return RedirectToAction(nameof(MisReservas));
+                    ModelState.AddModelError(string.Empty, "La cancha ya se encuentra reservada en esa fecha y horario. Por favor, elige otro turno.");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "La cancha ya se encuentra reservada en esa fecha y horario.");
+                    bool registroExitoso = _reservaService.RegistrarReserva(reservaDTO);
+                    if (registroExitoso)
+                    {
+                        return RedirectToAction(nameof(MisReservas));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Ocurrió un error al procesar el registro de la reserva.");
+                    }
                 }
             }
 

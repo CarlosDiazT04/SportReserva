@@ -1,10 +1,12 @@
-﻿﻿using Microsoft.AspNetCore.Authentication;
+﻿﻿﻿﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
 using System.Security.Claims;
+using SportReserva.Data;
+using SportReserva.Models.Entities;
 
 namespace SportReserva.Controllers
 {
@@ -13,11 +15,13 @@ namespace SportReserva.Controllers
     public class LoginController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly Conexion _context;
 
         // Inyectamos solo el servicio de autenticación, no el repositorio
-        public LoginController(IAuthService authService)
+        public LoginController(IAuthService authService, Conexion context)
         {
             _authService = authService;
+            _context = context;
         }
 
         [HttpGet]
@@ -65,6 +69,46 @@ namespace SportReserva.Controllers
             // 5. Si el servicio devolvió null, es tarjeta roja: credenciales incorrectas
             ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
             return View(loginDTO);
+        }
+
+        [HttpGet]
+        public IActionResult Registro()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated) return RedirectToAction("Index", "Cancha");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registro(RegistroDTO dto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_context.Usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+                {
+                    ModelState.AddModelError(string.Empty, "El nombre de usuario ya está en uso.");
+                    return View(dto);
+                }
+
+                var nuevoUsuario = new Usuario { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Cliente" };
+                _context.Usuarios.Add(nuevoUsuario);
+                await _context.SaveChangesAsync();
+
+                var nuevoCliente = new Cliente 
+                { 
+                    Nombres = dto.Nombres, 
+                    Apellidos = dto.Apellidos, 
+                    DNI = dto.DNI, 
+                    Telefono = dto.Telefono, 
+                    Correo = dto.Correo, 
+                    IdUsuario = nuevoUsuario.IdUsuario 
+                };
+                _context.Clientes.Add(nuevoCliente);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index"); // Se envía al login para que inicie sesión
+            }
+            return View(dto);
         }
 
         [HttpGet]

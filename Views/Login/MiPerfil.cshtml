@@ -1,0 +1,29 @@
+@model SportReserva.Models.Entities.Cliente
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-5 text-center">
+            <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle shadow" style="width: 80px; height: 80px;">
+                    <i class="fa-solid fa-user fs-1"></i>
+                </div>
+            </div>
+            <h3 class="fw-bold text-uppercase mb-1">@Model.Nombres @Model.Apellidos</h3>
+            <p class="text-muted mb-4"><i class="fa-regular fa-id-badge me-2"></i>DNI: @Model.DNI</p>
+
+            <div class="row text-start mt-4">
+                <div class="col-12 mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold small text-uppercase text-muted d-block"><i class="fa-solid fa-phone me-2"></i>Teléfono Celular</label>
+                    <span class="fs-5 fw-semibold text-dark">@Model.Telefono</span>
+                </div>
+                <div class="col-12 mb-3 p-3 border rounded bg-light">
+                    <label class="fw-bold small text-uppercase text-muted d-block"><i class="fa-solid fa-envelope me-2"></i>Correo Electrónico</label>
+                    <span class="fs-5 fw-semibold text-dark">@Model.Correo</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
