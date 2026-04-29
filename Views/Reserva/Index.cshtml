@@ -27,7 +27,7 @@
                 <td>@item.IdReserva</td>
                 <td>@item.FechaRegistro.ToString("g")</td>
                 <td>@item.FechaReserva.ToShortDateString()</td>
-                <td>@item.PrecioTotal.ToString("C")</td>
+                <td>S/ @item.PrecioTotal.ToString("0.00")</td>
                 <td><span class="badge bg-info">@item.EstadoReserva</span></td>
                 <td>
                     <form asp-action="Confirm" asp-route-id="@item.IdReserva" method="post" class="d-inline">

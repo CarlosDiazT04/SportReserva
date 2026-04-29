@@ -10,5 +10,7 @@ namespace SportReserva.Repositories.Interfaces
         ReservaDTO ObtenerPorId(int id);
         void Agregar(ReservaDTO reserva);
         void Actualizar(ReservaDTO reserva);
+        bool ExisteCruce(int idCancha, DateTime fechaReserva, int idHorario);
+        bool ActualizarEstado(int idReserva, string nuevoEstado);
     }
 }

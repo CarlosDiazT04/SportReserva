@@ -11,15 +11,18 @@
 
     <style>
         :root {
-            --pitch-green: #1e5128; /* Verde gramado */
-            --turf-light: #4e944f;
-            --stadium-dark: #191a19;
+            --pitch-green: #2b7a0b; /* Verde gramado vibrante */
+            --turf-light: #5bb318;
+            --stadium-dark: #0a2608; /* Verde muy oscuro estilo estadio */
             --white-lines: #ffffff;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f7f6;
+            background: linear-gradient(135deg, #eef7ee 0%, #dcf0dc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         h1, h2, h3, .navbar-brand {
@@ -29,8 +32,8 @@
 
         /* Navbar estilo Estadio de Noche */
         .navbar-sport {
-            background-color: var(--stadium-dark);
-            border-bottom: 4px solid var(--pitch-green);
+            background: linear-gradient(90deg, var(--stadium-dark) 0%, var(--pitch-green) 100%);
+            border-bottom: 3px solid var(--turf-light);
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
 
@@ -57,27 +60,18 @@
             border: none;
             font-family: 'Oswald', sans-serif;
             letter-spacing: 0.5px;
+            border-radius: 8px; /* Bordes más modernos */
         }
 
         .btn-primary:hover {
             background-color: var(--turf-light);
         }
 
-        /* Contenedor principal con sombra suave */
-        .main-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            margin-top: 20px;
-            border-left: 5px solid var(--pitch-green);
-        }
-
         footer {
             background-color: var(--stadium-dark);
             color: white;
-            padding: 20px 0;
-            margin-top: 50px;
+            padding: 25px 0;
+            margin-top: auto; /* Fuerza al footer a irse hasta abajo */
         }
     </style>
 </head>
@@ -93,25 +87,46 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 ms-4">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Reserva" asp-action="Index">
-                                <i class="fa-solid fa-calendar-check me-1"></i> Partidos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Cancha" asp-action="Index">
-                                <i class="fa-solid fa-field-hockey me-1"></i> Nuestras Canchas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Reporte" asp-action="Index">
-                                <i class="fa-solid fa-chart-line me-1"></i> Estadísticas
-                            </a>
-                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reserva" asp-action="Index">
+                                    <i class="fa-solid fa-calendar-check me-1"></i> Todas las Reservas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cancha" asp-action="Index">
+                                    <i class="fa-solid fa-field-hockey me-1"></i> Gestión Canchas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Horario" asp-action="Index">
+                                    <i class="fa-regular fa-clock me-1"></i> Gestión Horarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reporte" asp-action="Index">
+                                    <i class="fa-solid fa-chart-line me-1"></i> Estadísticas
+                                </a>
+                            </li>
+                        }
+                        else if (User.IsInRole("Cliente"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cancha" asp-action="Index">
+                                    <i class="fa-solid fa-futbol me-1"></i> Reservar Cancha
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reserva" asp-action="MisReservas">
+                                    <i class="fa-solid fa-calendar-check me-1"></i> Mis Reservas
+                                </a>
+                            </li>
+                        }
                     </ul>
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="btn btn-outline-light btn-sm rounded-pill px-4" asp-controller="Login" asp-action="Index">
+                            <a class="btn btn-outline-light btn-sm rounded-pill px-4" asp-controller="Login" asp-action="Salir">
                                 <i class="fa-solid fa-right-from-bracket me-1"></i> Salir
                             </a>
                         </li>
@@ -121,13 +136,13 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="main-card">
+    <div class="container flex-grow-1 py-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="text-center">
+    <footer class="text-center mt-auto">
         <div class="container">
             <p class="mb-0">&copy; @DateTime.Now.Year - SportReserva - <span class="text-success">Estado del Campo: Óptimo</span></p>
         </div>

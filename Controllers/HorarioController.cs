@@ -4,7 +4,8 @@ using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces;
 
 namespace SportReserva.Controllers
-{   [Authorize]
+{   
+    [Authorize(Roles = "Admin")]
     public class HorarioController : Controller
     {
         private readonly IHorarioRepository _horarioRepository;

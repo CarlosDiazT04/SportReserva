@@ -1,0 +1,47 @@
+@model IEnumerable<SportReserva.Models.DTOs.ReservaDTO>
+
+@{
+    ViewData["Title"] = "Mis Reservas";
+}
+
+<div class="container mt-4">
+    <h2 class="text-uppercase fw-bold"><i class="fa-solid fa-clock-rotate-left text-success me-2"></i>Historial de Reservas</h2>
+    <p class="text-muted">Aquí puedes revisar el estado de las canchas que has reservado.</p>
+
+    <div class="table-responsive mt-4">
+        <table class="table table-hover table-bordered shadow-sm bg-white">
+            <tdhead class="table-dark">
+                <tr>
+                    <th>Nro. Reserva</th>
+                    <th>Cancha (ID)</th>
+                    <th>Fecha Reservada</th>
+                    <th>Horario (ID)</th>
+                    <th>Total (S/)</th>
+                    <th>Estado</th>
+                </tr>
+            </tdhead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">Aún no tienes reservas registradas. ¡Anímate a separar una cancha!</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var reserva in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">#@reserva.IdReserva</td>
+                            <td>Cancha @reserva.IdCancha</td>
+                            <td>@reserva.FechaReserva.ToShortDateString()</td>
+                            <td>Turno @reserva.IdHorario</td>
+                            <td>S/ @reserva.PrecioTotal.ToString("0.00")</td>
+                            <td><span class="badge @(reserva.EstadoReserva == "Pendiente" ? "bg-warning text-dark" : (reserva.EstadoReserva == "Confirmada" ? "bg-success" : "bg-danger"))">@reserva.EstadoReserva</span></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces;
 
 namespace SportReserva.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class ReporteController : Controller
     {
         private readonly IReporteRepository _reporteRepository;

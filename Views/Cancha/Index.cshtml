@@ -20,7 +20,7 @@
                     
                     @if (cancha.Estado == "Disponible")
                     {
-                        <button class="btn btn-outline-success w-100 fw-bold">Ver Horarios</button>
+                        <a asp-controller="Reserva" asp-action="Disponibilidad" asp-route-deporte="@cancha.TipoDeporte" class="btn btn-outline-success w-100 fw-bold">Ver Horarios</a>
                     }
                     else
                     {

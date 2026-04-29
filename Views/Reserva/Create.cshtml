@@ -1,0 +1,60 @@
+@model SportReserva.Models.DTOs.ReservaDTO
+
+@{
+    ViewData["Title"] = "Confirmar Reserva";
+}
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-white border-0 pt-4 pb-2 text-center rounded-top-4">
+            <h4 class="fw-bold text-uppercase text-success"><i class="fa-solid fa-check-circle me-2"></i>Confirmar Reserva</h4>
+            <p class="text-muted">Revisa los datos de tu partido antes de confirmar.</p>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="Create" method="post">
+                <!-- Campos ocultos para enviar los IDs al servidor -->
+                <input type="hidden" asp-for="IdCancha" />
+                <input type="hidden" asp-for="IdHorario" />
+                <input type="hidden" asp-for="FechaReserva" />
+                <input type="hidden" asp-for="PrecioTotal" />
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small text-uppercase">Cancha Seleccionada</label>
+                    <p class="fs-6 fw-bold">@ViewBag.CanchaNombre</p>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Fecha</label>
+                        <p class="fs-6">@Model.FechaReserva.ToString("dd/MM/yyyy")</p>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-bold text-muted small text-uppercase">Turno</label>
+                        <p class="fs-6">@ViewBag.HorarioTexto</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-muted small text-uppercase">Total a Pagar (En local)</label>
+                    <h3 class="text-success fw-bold">S/ @Model.PrecioTotal.ToString("0.00")</h3>
+                </div>
+
+                <!-- Sección de Pago con QR y WhatsApp -->
+                <div class="mb-4 text-center p-3 rounded bg-light border border-success border-opacity-25">
+                    <h5 class="fw-bold text-dark"><i class="fa-solid fa-qrcode me-2"></i>Pago por Yape / Plin</h5>
+                    <!-- Nota: Cambia este 'src' por la ruta donde guardes tu imagen QR real (ej: /img/mi-qr.png) -->
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Código QR de Pago" class="img-fluid my-2 shadow-sm rounded" style="max-width: 130px;" />
+                    <p class="mb-1 fw-bold fs-5 text-success"><i class="fa-brands fa-whatsapp me-2"></i>+51 970 493 107</p>
+                    <p class="text-muted small mb-0">Escanea el QR para pagar y luego mandar el voucher al número indicando tu reserva.</p>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger fw-bold" role="alert"></div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <a asp-action="Disponibilidad" class="btn btn-outline-secondary w-50 fw-bold">Volver</a>
+                    <button type="submit" class="btn btn-success w-50 fw-bold">Confirmar y Reservar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

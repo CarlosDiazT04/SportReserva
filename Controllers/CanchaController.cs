@@ -1,23 +1,23 @@
-﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿﻿﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using SportReserva.Repositories.Interfaces;
+using SportReserva.Services;
 
 namespace SportReserva.Controllers
 {
     public class CanchaController : Controller
     {
-        private readonly ICanchaRepository _canchaRepo;
+        private readonly ICanchaService _canchaService;
 
-        // Inyectamos el repositorio
-        public CanchaController(ICanchaRepository canchaRepo)
+        // Inyectamos el servicio en lugar del repositorio
+        public CanchaController(ICanchaService canchaService)
         {
-            _canchaRepo = canchaRepo;
+            _canchaService = canchaService;
         }
 
         public IActionResult Index()
         {
-            // Pedimos la lista de canchas y se la enviamos a la vista
-            var canchas = _canchaRepo.ObtenerTodas();
+            // Pedimos la lista de canchas al servicio
+            var canchas = _canchaService.ObtenerTodas();
             return View(canchas);
         }
     }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using SportReserva.Data;
 using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces;
 
@@ -7,6 +9,13 @@ namespace SportReserva.Repositories.Implementations
 {
     public class HorarioRepository : IHorarioRepository
     {
+        private readonly Conexion _context;
+
+        public HorarioRepository(Conexion context)
+        {
+            _context = context;
+        }
+
         public void Actualizar(HorarioDTO horario)
         {
             throw new NotImplementedException();
@@ -29,7 +38,13 @@ namespace SportReserva.Repositories.Implementations
 
         public IEnumerable<HorarioDTO> ObtenerTodos()
         {
-            throw new NotImplementedException();
+            return _context.Horarios.Select(h => new HorarioDTO
+            {
+                IdHorario = h.IdHorario,
+                HoraInicio = h.HoraInicio,
+                HoraFin = h.HoraFin,
+                Estado = h.Estado
+            }).ToList();
         }
     }
 }

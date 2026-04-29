@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Disponibilidad";
+}
+
+<div class="container mt-4">
+    <h2 class="text-uppercase fw-bold"><i class="fa-regular fa-calendar-check text-success me-2"></i>Consultar Disponibilidad</h2>
+
+    <form method="get" class="mt-4 p-4 border rounded shadow-sm bg-light">
+        <div class="row align-items-end">
+            <div class="col-md-4 mb-3">
+                <label for="deporte" class="form-label fw-bold">Deporte Seleccionado</label>
+                <!-- Mostramos el deporte que viene de la URL (query string) -->
+                <input type="text" id="deporte" name="deporte" class="form-control bg-white" value="@Context.Request.Query["deporte"]" readonly />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="fecha" class="form-label fw-bold">Fecha de Reserva</label>
+                <!-- Si no hay fecha en la URL, ponemos la fecha de hoy por defecto -->
+                <input type="date" id="fecha" name="fecha" class="form-control" value="@(string.IsNullOrEmpty(Context.Request.Query["fecha"]) ? DateTime.Now.ToString("yyyy-MM-dd") : Context.Request.Query["fecha"])" required />
+            </div>
+            <div class="col-md-4 mb-3">
+                <button type="submit" class="btn btn-success w-100 fw-bold"><i class="fa-solid fa-magnifying-glass me-2"></i>Buscar Horarios</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Resultados de la búsqueda -->
+    @if (ViewBag.Canchas != null && ViewBag.Horarios != null)
+    {
+        var canchas = (IEnumerable<SportReserva.Models.DTOs.CanchaDTO>)ViewBag.Canchas;
+        var horarios = (IEnumerable<SportReserva.Models.DTOs.HorarioDTO>)ViewBag.Horarios;
+        var fechaSeleccionada = Context.Request.Query["fecha"].ToString();
+        if (string.IsNullOrEmpty(fechaSeleccionada)) fechaSeleccionada = DateTime.Now.ToString("yyyy-MM-dd");
+
+        <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Resultados para el @fechaSeleccionada</h4>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Horario" asp-action="Create" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus me-1"></i>Añadir Nuevo Horario</a>
+                }
+            </div>
+
+            @if (!canchas.Any())
+            {
+                <div class="alert alert-warning">No hay canchas disponibles para los criterios seleccionados.</div>
+            }
+            else
+            {
+                <div class="row">
+                    @foreach (var cancha in canchas)
+                    {
+                        <div class="col-md-6 mb-4">
+                            <div class="card shadow-sm h-100 border-top border-4 border-success">
+                                <div class="card-header bg-white pb-0 border-0 mt-2">
+                                    <h5 class="card-title fw-bold text-uppercase mb-0">@cancha.Nombre</h5>
+                                    <p class="text-muted small">@cancha.TipoDeporte - Tarifa: S/ @cancha.PrecioHora.ToString("0.00")</p>
+                                </div>
+                                <div class="card-body">
+                                    <p class="fw-bold mb-2">Turnos Disponibles:</p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var horario in horarios)
+                                        {
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <span class="btn btn-outline-secondary btn-sm fw-bold disabled" title="Modo Admin: Solo visualización">
+                                                    @horario.HoraInicio.ToString(@"hh\:mm") - @horario.HoraFin.ToString(@"hh\:mm")
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <a asp-action="Create" asp-route-idCancha="@cancha.IdCancha" asp-route-fecha="@fechaSeleccionada" asp-route-idHorario="@horario.IdHorario" class="btn btn-outline-success btn-sm fw-bold">
+                                                    @horario.HoraInicio.ToString(@"hh\:mm") - @horario.HoraFin.ToString(@"hh\:mm")
+                                                </a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
