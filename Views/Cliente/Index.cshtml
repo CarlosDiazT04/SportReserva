@@ -1,0 +1,43 @@
+@model IEnumerable<SportReserva.Models.Entities.Cliente>
+@{
+    ViewData["Title"] = "Gestión de Clientes";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 fw-bold text-uppercase"><i class="fa-solid fa-users me-2"></i> Gestión de Clientes</h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover shadow-sm border rounded">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombres</th>
+                    <th>Apellidos</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.Nombres</td>
+                            <td>@cliente.Apellidos</td>
+                            <td>@cliente.DNI</td>
+                            <td>@cliente.Telefono</td>
+                            <td>@cliente.Correo</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-3">No hay clientes registrados aún.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

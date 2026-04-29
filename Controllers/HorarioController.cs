@@ -17,8 +17,8 @@ namespace SportReserva.Controllers
 
         public IActionResult Index()
         {
-            // TODO: var horarios = _horarioRepository.ObtenerTodos();
-            return View(new List<HorarioDTO>());
+            var horarios = _horarioRepository.ObtenerTodos();
+            return View(horarios);
         }
 
         public IActionResult Create()
@@ -29,8 +29,12 @@ namespace SportReserva.Controllers
         [HttpPost]
         public IActionResult Create(HorarioDTO horarioDTO)
         {
-            // TODO: Guardar nuevo horario si el ModelState es válido
-            return RedirectToAction(nameof(Index));
+            if (ModelState.IsValid)
+            {
+                _horarioRepository.Agregar(horarioDTO);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(horarioDTO);
         }
     }
 }

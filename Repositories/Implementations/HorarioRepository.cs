@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SportReserva.Data;
 using SportReserva.Models.DTOs;
+using SportReserva.Models.Entities;
 using SportReserva.Repositories.Interfaces;
 
 namespace SportReserva.Repositories.Implementations
@@ -23,7 +24,14 @@ namespace SportReserva.Repositories.Implementations
 
         public void Agregar(HorarioDTO horario)
         {
-            throw new NotImplementedException();
+            var nuevoHorario = new Horario
+            {
+                HoraInicio = horario.HoraInicio,
+                HoraFin = horario.HoraFin,
+                Estado = "Activo" // Asignamos un estado por defecto
+            };
+            _context.Horarios.Add(nuevoHorario);
+            _context.SaveChanges();
         }
 
         public void Eliminar(int id)
