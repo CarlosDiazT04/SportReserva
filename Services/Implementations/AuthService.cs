@@ -23,18 +23,25 @@ namespace SportReserva.Services
 
             if (usuario == null) return null;
 
-            // Buscamos el perfil de Cliente real asociado a este Usuario
-            var cliente = _context.Clientes.FirstOrDefault(c => c.IdUsuario == usuario.IdUsuario);
-            string idClienteStr = cliente != null ? cliente.IdCliente.ToString() : "0";
-
             // La lógica de creación de identidad se queda aquí, fuera del controlador
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString()),
-                new Claim("IdCliente", idClienteStr), // Guardamos el IdCliente real para las reservas
                 new Claim(ClaimTypes.Name, usuario.NombreUsuario),
                 new Claim(ClaimTypes.Role, usuario.Rol ?? "Cliente")
             };
+
+            // Inyectamos el ID específico dependiendo del tipo de perfil del usuario
+            if (usuario.Rol == "Cliente")
+            {
+                var cliente = _context.Clientes.FirstOrDefault(c => c.IdUsuario == usuario.IdUsuario);
+                if (cliente != null) claims.Add(new Claim("IdCliente", cliente.IdCliente.ToString()));
+            }
+            else if (usuario.Rol == "Empresa")
+            {
+                var empresa = _context.Empresas.FirstOrDefault(e => e.IdUsuario == usuario.IdUsuario);
+                if (empresa != null) claims.Add(new Claim("IdEmpresa", empresa.EmpresaId.ToString()));
+            }
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             return new ClaimsPrincipal(identity);

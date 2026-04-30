@@ -1,11 +1,12 @@
-﻿using SportReserva.Models.DTOs;
+﻿// Models/Mappers/CanchaMapper.cs
+using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 
 namespace SportReserva.Models.Mappers
 {
     public class CanchaMapper
     {
-        public static CanchaDTO ToDTO(Cancha cancha)
+        public static CanchaDTO ToDto(Cancha cancha)
         {
             return new CanchaDTO
             {
@@ -18,16 +19,16 @@ namespace SportReserva.Models.Mappers
             };
         }
 
-        public static Cancha ToEntity(CanchaDTO canchaDTO)
+        public static Cancha ToEntity(CanchaDTO dto)
         {
             return new Cancha
             {
-                IdCancha = canchaDTO.IdCancha,
-                Nombre = canchaDTO.Nombre,
-                TipoDeporte = canchaDTO.TipoDeporte,
-                PrecioHora = canchaDTO.PrecioHora,
-                Estado = canchaDTO.Estado,
-                Descripcion = canchaDTO.Descripcion
+                IdCancha = dto.IdCancha,
+                Nombre = dto.Nombre,
+                TipoDeporte = dto.TipoDeporte,
+                PrecioHora = dto.PrecioHora,
+                Estado = dto.Estado,
+                Descripcion = dto.Descripcion
             };
         }
     }

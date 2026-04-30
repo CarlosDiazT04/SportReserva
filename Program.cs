@@ -29,9 +29,11 @@ builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IHorarioRepository, HorarioRepository>();
 builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICanchaService, CanchaService>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
+builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 
 var app = builder.Build();
 
@@ -53,9 +55,12 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Login}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"); // Página principal predeterminada
+});
 
 // ==========================================
 // SECCIÓN DE SEED DATA (DATOS INICIALES)
@@ -89,16 +94,32 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
-    // 4. Creamos unas canchas para que no se vea vacío
-    if (!context.Canchas.Any())
+    // 4. Verificamos y creamos una empresa de prueba
+    if (!context.Usuarios.Any(u => u.NombreUsuario == "empresa"))
+    {
+        context.Usuarios.Add(new Usuario { NombreUsuario = "empresa", Clave = "123", Rol = "Empresa" });
+        context.SaveChanges();
+    }
+    
+    var usuarioEmpresa = context.Usuarios.FirstOrDefault(u => u.NombreUsuario == "empresa");
+    var empresaTest = context.Empresas.FirstOrDefault(e => e.Nombre == "Sport Center");
+    if (usuarioEmpresa != null && empresaTest == null)
+    {
+        empresaTest = new Empresa { Nombre = "Sport Center", RUC = "12345678901", Direccion = "Av. Ficticia 123", Telefono = "987654321", Email = "info@sportcenter.com", IdUsuario = usuarioEmpresa.IdUsuario, FechaRegistro = DateTime.Now };
+        context.Empresas.Add(empresaTest);
+        context.SaveChanges();
+    }
+
+    // 5. Creamos unas canchas para que no se vea vacío
+    if (!context.Canchas.Any() && empresaTest != null)
     {
         context.Canchas.AddRange(
-            new Cancha { Nombre = "Estadio Monumental", TipoDeporte = "Fútbol 11", PrecioHora = 120, Estado = "Disponible", Descripcion = "Cancha de césped natural profesional." },
-            new Cancha { Nombre = "La Bombonera", TipoDeporte = "Fútbol 7", PrecioHora = 80, Estado = "Disponible", Descripcion = "Sintético ideal para pichangas nocturnas." }
+            new Cancha { Nombre = "Estadio Monumental", TipoDeporte = "Fútbol 11", PrecioHora = 120, Estado = "Disponible", Descripcion = "Cancha de césped natural profesional.", EmpresaId = empresaTest.EmpresaId },
+            new Cancha { Nombre = "La Bombonera", TipoDeporte = "Fútbol 7", PrecioHora = 80, Estado = "Disponible", Descripcion = "Sintético ideal para pichangas nocturnas.", EmpresaId = empresaTest.EmpresaId }
         );
     }
 
-    // 3. Creamos algunos Horarios base (ej. formato 24h para turnos de noche)
+    // 6. Creamos algunos Horarios base (ej. formato 24h para turnos de noche)
     if (!context.Horarios.Any())
     {
         context.Horarios.AddRange(

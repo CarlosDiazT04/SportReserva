@@ -15,6 +15,7 @@ namespace SportReserva.Data
         public DbSet<Horario> Horarios { get; set; }
         public DbSet<Reserva> Reservas { get; set; }
         public DbSet<Pago> Pagos { get; set; }
+        public DbSet<Empresa> Empresas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

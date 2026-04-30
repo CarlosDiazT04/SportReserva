@@ -1,4 +1,4 @@
-﻿namespace SportReserva.Models.DTOs
+﻿﻿namespace SportReserva.Models.DTOs
 {
     public class CanchaDTO
     {
@@ -13,5 +13,7 @@
         public string Estado { get; set; } = string.Empty;
 
         public string Descripcion { get; set; } = string.Empty;
+
+        public int EmpresaId { get; set; }
     }
 }

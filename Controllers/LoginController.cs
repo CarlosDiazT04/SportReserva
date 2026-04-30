@@ -112,6 +112,46 @@ namespace SportReserva.Controllers
         }
 
         [HttpGet]
+        public IActionResult RegistroEmpresa()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated) return RedirectToAction("MisCanchas", "Empresa");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegistroEmpresa(RegistroEmpresaDTO dto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_context.Usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+                {
+                    ModelState.AddModelError(string.Empty, "El nombre de usuario de la empresa ya está en uso.");
+                    return View(dto);
+                }
+
+                var nuevoUsuario = new Usuario { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Empresa" };
+                _context.Usuarios.Add(nuevoUsuario);
+                await _context.SaveChangesAsync();
+
+                var nuevaEmpresa = new Empresa 
+                { 
+                    Nombre = dto.Nombre, 
+                    RUC = dto.RUC, 
+                    Direccion = dto.Direccion, 
+                    Telefono = dto.Telefono, 
+                    IdUsuario = nuevoUsuario.IdUsuario,
+                    FechaRegistro = DateTime.Now
+                };
+                _context.Empresas.Add(nuevaEmpresa);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Index"); 
+            }
+            return View(dto);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Salir()
         {
             // Limpiamos la cookie de autenticación

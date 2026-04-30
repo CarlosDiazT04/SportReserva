@@ -1,4 +1,4 @@
-﻿using SportReserva.Models.DTOs;
+﻿﻿using SportReserva.Models.DTOs;
 using System.Collections.Generic;
 
 namespace SportReserva.Repositories.Interfaces
@@ -6,6 +6,7 @@ namespace SportReserva.Repositories.Interfaces
     public interface ICanchaRepository
     {
         IEnumerable<CanchaDTO> ObtenerTodas();
+        IEnumerable<CanchaDTO> ObtenerPorEmpresa(int idEmpresa);
         CanchaDTO ObtenerPorId(int id);
         void Agregar(CanchaDTO cancha);
         void Actualizar(CanchaDTO cancha);

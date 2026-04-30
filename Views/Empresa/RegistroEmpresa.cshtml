@@ -1,0 +1,23 @@
+@model SportReserva.Models.DTOs.RegistroEmpresaDTO
+@{
+    ViewData["Title"] = "Registro de Empresa";
+}
+
+<div class="container">
+    <h1>Registrar Empresa</h1>
+    <form asp-action="RegistroEmpresa" method="post">
+        <label asp-for="Nombre">Nombre</label>
+        <input asp-for="Nombre" type="text" placeholder="Ej: Empresa Deportiva" required />
+
+        <label asp-for="RUC">RUC</label>
+        <input asp-for="RUC" type="text" placeholder="Ej: 20345678912" required />
+
+        <label asp-for="Direccion">Dirección</label>
+        <input asp-for="Direccion" type="text" placeholder="Av. Principal 123" required />
+
+        <label asp-for="Telefono">Teléfono</label>
+        <input asp-for="Telefono" type="text" placeholder="Ej: 999-999-999" />
+
+        <button type="submit">Registrar</button>
+    </form>
+</div>
