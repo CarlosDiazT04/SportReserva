@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using Microsoft.AspNetCore.Authentication;
+﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -140,6 +140,8 @@ namespace SportReserva.Controllers
                     RUC = dto.RUC, 
                     Direccion = dto.Direccion, 
                     Telefono = dto.Telefono, 
+                    UrlMapa = dto.UrlMapa,
+                    UrlQR = dto.UrlQR,
                     IdUsuario = nuevoUsuario.IdUsuario,
                     FechaRegistro = DateTime.Now
                 };
@@ -151,12 +153,12 @@ namespace SportReserva.Controllers
             return View(dto);
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         public async Task<IActionResult> Salir()
         {
             // Limpiamos la cookie de autenticación
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Login");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

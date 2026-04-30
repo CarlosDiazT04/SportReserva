@@ -105,7 +105,17 @@ using (var scope = app.Services.CreateScope())
     var empresaTest = context.Empresas.FirstOrDefault(e => e.Nombre == "Sport Center");
     if (usuarioEmpresa != null && empresaTest == null)
     {
-        empresaTest = new Empresa { Nombre = "Sport Center", RUC = "12345678901", Direccion = "Av. Ficticia 123", Telefono = "987654321", Email = "info@sportcenter.com", IdUsuario = usuarioEmpresa.IdUsuario, FechaRegistro = DateTime.Now };
+        empresaTest = new Empresa { 
+            Nombre = "Sport Center", 
+            RUC = "12345678901", 
+            Direccion = "Av. Ficticia 123", 
+            Telefono = "987654321", 
+            Email = "info@sportcenter.com", 
+            UrlMapa = "https://maps.google.com/?q=-12.046374,-77.042793",
+            UrlQR = "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
+            IdUsuario = usuarioEmpresa.IdUsuario, 
+            FechaRegistro = DateTime.Now 
+        };
         context.Empresas.Add(empresaTest);
         context.SaveChanges();
     }

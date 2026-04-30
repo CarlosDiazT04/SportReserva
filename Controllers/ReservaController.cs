@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces;
@@ -11,12 +11,14 @@ namespace SportReserva.Controllers
         private readonly IReservaService _reservaService;
         private readonly ICanchaService _canchaService;
         private readonly IHorarioRepository _horarioRepo;
+        private readonly IEmpresaService _empresaService;
 
-        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioRepository horarioRepo)
+        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioRepository horarioRepo, IEmpresaService empresaService)
         {
             _reservaService = reservaService;
             _canchaService = canchaService;
             _horarioRepo = horarioRepo;
+            _empresaService = empresaService;
         }
 
         public IActionResult Index()
@@ -65,6 +67,9 @@ namespace SportReserva.Controllers
             var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == idHorario);
 
             if (cancha == null || horario == null) return NotFound("Datos no encontrados");
+            
+            // Obtenemos los datos de la empresa para mostrar el mapa y el QR de pago
+            var empresa = _empresaService.ObtenerTodas().FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId);
 
             var reserva = new ReservaDTO
             {
@@ -76,6 +81,11 @@ namespace SportReserva.Controllers
 
             ViewBag.CanchaNombre = cancha.Nombre;
             ViewBag.HorarioTexto = $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}";
+            
+            ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
+            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa.UrlQR;
+            ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";
+            ViewBag.UrlMapa = empresa?.UrlMapa;
 
             return View(reserva);
         }
@@ -131,6 +141,12 @@ namespace SportReserva.Controllers
             var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == reservaDTO.IdHorario);
             ViewBag.CanchaNombre = cancha?.Nombre;
             ViewBag.HorarioTexto = horario != null ? $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}" : "";
+            
+            var empresa = cancha != null ? _empresaService.ObtenerTodas().FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
+            ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
+            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa?.UrlQR;
+            ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";
+            ViewBag.UrlMapa = empresa?.UrlMapa;
 
             return View(reservaDTO);
         }

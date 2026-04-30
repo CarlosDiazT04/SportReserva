@@ -1,9 +1,10 @@
-﻿﻿﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using SportReserva.Services;
 
 namespace SportReserva.Controllers
 {
+    [Authorize]
     public class CanchaController : Controller
     {
         private readonly ICanchaService _canchaService;

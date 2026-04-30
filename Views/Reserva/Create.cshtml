@@ -34,6 +34,15 @@
                     </div>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label fw-bold text-muted small text-uppercase">Ubicación del Recinto</label>
+                    <p class="fs-6 mb-1"><i class="fa-solid fa-location-dot text-danger me-2"></i>@ViewBag.DireccionEmpresa</p>
+                    @if (!string.IsNullOrEmpty((string)ViewBag.UrlMapa))
+                    {
+                        <a href="@ViewBag.UrlMapa" target="_blank" class="text-primary small fw-bold text-decoration-none"><i class="fa-solid fa-map-location-dot me-1"></i>Ver en Google Maps</a>
+                    }
+                </div>
+
                 <div class="mb-4">
                     <label class="form-label fw-bold text-muted small text-uppercase">Total a Pagar (En local)</label>
                     <h3 class="text-success fw-bold">S/ @Model.PrecioTotal.ToString("0.00")</h3>
@@ -42,10 +51,9 @@
                 <!-- Sección de Pago con QR y WhatsApp -->
                 <div class="mb-4 text-center p-3 rounded bg-light border border-success border-opacity-25">
                     <h5 class="fw-bold text-dark"><i class="fa-solid fa-qrcode me-2"></i>Pago por Yape / Plin</h5>
-                    <!-- Nota: Cambia este 'src' por la ruta donde guardes tu imagen QR real (ej: /img/mi-qr.png) -->
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="Código QR de Pago" class="img-fluid my-2 shadow-sm rounded" style="max-width: 130px;" />
-                    <p class="mb-1 fw-bold fs-5 text-success"><i class="fa-brands fa-whatsapp me-2"></i>+51 970 493 107</p>
-                    <p class="text-muted small mb-0">Escanea el QR para pagar y luego mandar el voucher al número indicando tu reserva.</p>
+                    <img src="@ViewBag.QrEmpresa" alt="Código QR de Pago" class="img-fluid my-2 shadow-sm rounded border bg-white p-1" style="max-width: 150px;" />
+                    <p class="mb-1 fw-bold fs-5 text-success"><i class="fa-brands fa-whatsapp me-2"></i>@ViewBag.TelefonoEmpresa</p>
+                    <p class="text-muted small mb-0">Escanea el QR para pagar y luego envía el voucher al WhatsApp registrado. Menciona tu reserva para que sea confirmada.</p>
                 </div>
 
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger fw-bold" role="alert"></div>
