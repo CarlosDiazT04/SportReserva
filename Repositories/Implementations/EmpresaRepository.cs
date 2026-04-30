@@ -34,6 +34,11 @@ namespace SportReserva.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
+        public Task AgregarAsync(Empresa empresa)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<EmpresaDTO?> ObtenerPorIdAsync(int id)
         {
             var e = await _context.Empresas.FindAsync(id);

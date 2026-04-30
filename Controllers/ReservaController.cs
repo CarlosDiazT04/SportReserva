@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SportReserva.Controllers
 {   [Authorize]
@@ -82,7 +85,7 @@ namespace SportReserva.Controllers
             ViewBag.HorarioTexto = $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}";
             
             ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
-            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa.UrlQR;
+            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa?.UrlQR;
             ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";
             ViewBag.UrlMapa = empresa?.UrlMapa;
 

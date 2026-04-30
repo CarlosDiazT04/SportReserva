@@ -1,29 +1,19 @@
-﻿using SportReserva.Models.DTOs;
+using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 
-namespace SportReserva.Models.Mappers
+namespace SportReserva.Mappers
 {
-    public class UsuarioMapper
+    public static class UsuarioMapper
     {
-        public static UsuarioDTO ToDTO(Usuario usuario)
+        public static UsuarioDTO ToDTO(this Usuario entidad)
         {
-            return new UsuarioDTO
-            {
-                IdUsuario = usuario.IdUsuario,
-                NombreUsuario = usuario.NombreUsuario,
-                Rol = usuario.Rol,
-                Estado = usuario.Estado
-            };
-        }
-
-        public static Usuario ToEntity(UsuarioDTO usuarioDTO)
-        {
-            return new Usuario
-            {
-                IdUsuario = usuarioDTO.IdUsuario,
-                NombreUsuario = usuarioDTO.NombreUsuario,
-                Rol = usuarioDTO.Rol,
-                Estado = usuarioDTO.Estado
+            if (entidad == null) return null;
+            
+            return new UsuarioDTO { 
+                IdUsuario = entidad.IdUsuario, 
+                NombreUsuario = entidad.NombreUsuario, 
+                Clave = entidad.Clave, 
+                Rol = entidad.Rol 
             };
         }
     }
