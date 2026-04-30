@@ -1,4 +1,4 @@
-// Services/Interfaces/IEmpresaService.cs
+using SportReserva.Models.Entities;
 using SportReserva.Models.DTOs;
 
 namespace SportReserva.Services
@@ -8,5 +8,6 @@ namespace SportReserva.Services
         IEnumerable<CanchaDTO> ObtenerCanchasDeEmpresa(int idEmpresa);
         void AgregarCancha(CanchaDTO canchaDTO);
         Task RegistrarEmpresa(RegistroEmpresaDTO dto);
+        Task<IEnumerable<Empresa>> ObtenerTodas();
     }
 }

@@ -40,5 +40,10 @@ namespace SportReserva.Services
 
             await _empresaRepository.AgregarAsync(empresa);
         }
+
+        public async Task<IEnumerable<Empresa>> ObtenerTodas()
+        {
+            return await _empresaRepository.ObtenerTodasAsync();
+        }
     }
 }

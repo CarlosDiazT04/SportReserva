@@ -21,5 +21,8 @@ namespace SportReserva.Models.DTOs
         public string Direccion { get; set; }
 
         public string Telefono { get; set; }
+
+        public string? UrlMapa { get; set; }
+        public string? UrlQR { get; set; }
     }
 }

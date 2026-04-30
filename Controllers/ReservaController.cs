@@ -60,23 +60,23 @@ namespace SportReserva.Controllers
             return View();
         }
 
-        // GET: Para mostrar el formulario de reserva de una cancha específica
-        public IActionResult Create(int idCancha, DateTime fecha, int idHorario)
+        public async Task<IActionResult> Create(int idCancha, DateTime fecha, int idHorario)
         {
             var cancha = _canchaService.ObtenerTodas().FirstOrDefault(c => c.IdCancha == idCancha);
             var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == idHorario);
 
             if (cancha == null || horario == null) return NotFound("Datos no encontrados");
             
-            // Obtenemos los datos de la empresa para mostrar el mapa y el QR de pago
-            var empresa = _empresaService.ObtenerTodas().FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId);
+            // 👇 AGREGA AWAIT AQUÍ 👇
+            var empresas = await _empresaService.ObtenerTodas();
+            var empresa = empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId);
 
             var reserva = new ReservaDTO
             {
                 IdCancha = idCancha,
                 FechaReserva = fecha,
                 IdHorario = idHorario,
-                PrecioTotal = cancha.PrecioHora // Asumimos que 1 turno = PrecioHora completo
+                PrecioTotal = cancha.PrecioHora 
             };
 
             ViewBag.CanchaNombre = cancha.Nombre;
@@ -92,9 +92,8 @@ namespace SportReserva.Controllers
 
         // POST: Para procesar la reserva que hace el cliente
         [HttpPost]
-        public IActionResult Create(ReservaDTO reservaDTO)
+        public async Task<IActionResult> Create(ReservaDTO reservaDTO)
         {
-            // Extraemos el ID del Cliente desde los Claims del usuario logueado
             var clienteIdClaim = User.Claims.FirstOrDefault(c => c.Type == "IdCliente")?.Value;
             reservaDTO.IdCliente = int.TryParse(clienteIdClaim, out int id) ? id : 0;
 
@@ -103,20 +102,18 @@ namespace SportReserva.Controllers
                 ModelState.AddModelError(string.Empty, "La sesión ha expirado o no se pudo identificar al cliente. Vuelve a iniciar sesión.");
             }
 
-            // Ignoramos la validación de estos campos porque se llenan internamente en el Servicio
             ModelState.Remove("EstadoReserva");
             ModelState.Remove("FechaRegistro");
-            ModelState.Remove("IdReserva"); // Es autogenerado, lo ignoramos
-            ModelState.Remove("IdCliente"); // Ya lo asignamos manualmente, lo ignoramos
+            ModelState.Remove("IdReserva"); 
+            ModelState.Remove("IdCliente"); 
 
             if (ModelState.IsValid)
             {
-                // Cruce de reservas (Backend): Validamos que no exista otra reserva activa en ese turno
                 bool existeCruce = _reservaService.ObtenerTodas()
                     .Any(r => r.IdCancha == reservaDTO.IdCancha 
-                           && r.FechaReserva.Date == reservaDTO.FechaReserva.Date 
-                           && r.IdHorario == reservaDTO.IdHorario 
-                           && r.EstadoReserva != "Cancelada");
+                        && r.FechaReserva.Date == reservaDTO.FechaReserva.Date 
+                        && r.IdHorario == reservaDTO.IdHorario 
+                        && r.EstadoReserva != "Cancelada");
 
                 if (existeCruce)
                 {
@@ -136,13 +133,15 @@ namespace SportReserva.Controllers
                 }
             }
 
-            // Si falla la validación, recargamos los datos visuales para no romper la pantalla
             var cancha = _canchaService.ObtenerTodas().FirstOrDefault(c => c.IdCancha == reservaDTO.IdCancha);
             var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == reservaDTO.IdHorario);
             ViewBag.CanchaNombre = cancha?.Nombre;
             ViewBag.HorarioTexto = horario != null ? $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}" : "";
             
-            var empresa = cancha != null ? _empresaService.ObtenerTodas().FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
+            // 👇 AGREGA AWAIT AQUÍ 👇
+            var empresas = await _empresaService.ObtenerTodas();
+            var empresa = cancha != null ? empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
+            
             ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
             ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa?.UrlQR;
             ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";

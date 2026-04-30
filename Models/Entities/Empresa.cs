@@ -35,5 +35,8 @@ namespace SportReserva.Models.Entities
         public Usuario? Usuario { get; set; }
 
         public ICollection<Cancha> Canchas { get; set; }
+
+        public string? UrlMapa { get; set; }
+        public string? UrlQR { get; set; }
     }
 }
