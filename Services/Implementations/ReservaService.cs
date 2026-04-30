@@ -19,7 +19,6 @@ namespace SportReserva.Services
 
         public IEnumerable<ReservaDTO> ObtenerPorClienteId(int clienteId)
         {
-            // Esto asume que agregarás este método a tu IReservaRepository
             return _reservaRepository.ObtenerPorClienteId(clienteId);
         }
 

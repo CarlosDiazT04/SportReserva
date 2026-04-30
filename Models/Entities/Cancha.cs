@@ -26,6 +26,6 @@ namespace SportReserva.Models.Entities
         public int EmpresaId { get; set; }
 
         [ForeignKey("EmpresaId")]
-        public Empresa? Empresa { get; set; } // Relación con la empresa que posee la cancha.
+        public Empresa? Empresa { get; set; }
     }
 }

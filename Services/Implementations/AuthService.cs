@@ -72,7 +72,6 @@ namespace SportReserva.Services
             
             _clienteRepo.Agregar(nuevoCliente);
 
-            // Evitamos el warning CS1998 (método asíncrono sin await)
             await Task.CompletedTask;
             return new ResultadoRegistroDTO { Exito = true };
         }

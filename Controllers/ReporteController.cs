@@ -17,7 +17,6 @@ namespace SportReserva.Controllers
 
         public IActionResult Index()
         {
-            // TODO: var reporte = _reporteRepository.GenerarReporteGeneral();
             return View(new List<ReporteReservaDTO>());
         }
     }

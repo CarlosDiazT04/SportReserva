@@ -6,16 +6,16 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
-        return View(); // Página pública principal
+        return View();
     }
 
     public IActionResult About()
     {
-        return View(); // Información de Acerca de Nosotros
+        return View();
     }
 
     public IActionResult Contact()
     {
-        return View(); // Información de Contacto
+        return View();
     }
 }

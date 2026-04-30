@@ -9,7 +9,6 @@ namespace SportReserva.Controllers
     {
         private readonly ICanchaService _canchaService;
 
-        // Inyectamos el servicio en lugar del repositorio
         public CanchaController(ICanchaService canchaService)
         {
             _canchaService = canchaService;
@@ -17,7 +16,6 @@ namespace SportReserva.Controllers
 
         public IActionResult Index()
         {
-            // Pedimos la lista de canchas al servicio
             var canchas = _canchaService.ObtenerTodas();
             return View(canchas);
         }

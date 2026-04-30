@@ -43,7 +43,6 @@ namespace SportReserva.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Para que el cliente busque disponibilidad por fecha/deporte
         public IActionResult Disponibilidad(DateTime? fecha, string deporte)
         {
             DateTime targetDate = fecha ?? DateTime.Now.Date;
@@ -52,7 +51,6 @@ namespace SportReserva.Controllers
                               _canchaService.ObtenerTodas().ToList() : 
                               _canchaService.ObtenerTodas().Where(c => c.TipoDeporte == deporte).ToList();
             
-            // Cruce de reservas: Filtramos las que coincidan con la fecha y no estén canceladas
             var reservasActivas = _reservaService.ObtenerTodas()
                 .Where(r => r.FechaReserva.Date == targetDate && r.EstadoReserva != "Cancelada")
                 .ToList();
@@ -69,7 +67,6 @@ namespace SportReserva.Controllers
 
             if (cancha == null || horario == null) return NotFound("Datos no encontrados");
             
-            // 👇 AGREGA AWAIT AQUÍ 👇
             var empresas = await _empresaService.ObtenerTodasAsync();
             var empresa = empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId);
 
@@ -92,7 +89,6 @@ namespace SportReserva.Controllers
             return View(reserva);
         }
 
-        // POST: Para procesar la reserva que hace el cliente
         [HttpPost]
         public async Task<IActionResult> Create(ReservaDTO reservaDTO)
         {
@@ -139,7 +135,6 @@ namespace SportReserva.Controllers
             ViewBag.CanchaNombre = cancha?.Nombre;
             ViewBag.HorarioTexto = horario != null ? $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}" : "";
             
-            // 👇 AGREGA AWAIT AQUÍ 👇
             var empresas = await _empresaService.ObtenerTodasAsync();
             var empresa = cancha != null ? empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
             
@@ -153,7 +148,6 @@ namespace SportReserva.Controllers
 
         public IActionResult MisReservas()
         {
-            // Asumiendo que guardaste el Id del cliente en los Claims durante el Login
             var clienteIdClaim = User.Claims.FirstOrDefault(c => c.Type == "IdCliente")?.Value;
             int clienteId = int.TryParse(clienteIdClaim, out int id) ? id : 0;
             var misReservas = _reservaService.ObtenerPorClienteId(clienteId);

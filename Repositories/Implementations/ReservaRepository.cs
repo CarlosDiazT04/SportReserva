@@ -99,7 +99,6 @@ namespace SportReserva.Repositories.Implementations
 
         public bool ExisteCruce(int idCancha, DateTime fechaReserva, int idHorario)
         {
-            // Valida si existe una reserva activa (no cancelada) para la misma cancha, fecha y hora.
             return _context.Reservas.Any(r =>
                 r.IdCancha == idCancha &&
                 r.FechaReserva.Date == fechaReserva.Date &&

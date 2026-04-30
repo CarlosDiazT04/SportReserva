@@ -35,7 +35,7 @@ namespace SportReserva.Repositories.Implementations
             {
                 HoraInicio = horario.HoraInicio,
                 HoraFin = horario.HoraFin,
-                Estado = "Activo" // Asignamos un estado por defecto
+                Estado = "Activo"
             };
             _context.Horarios.Add(nuevoHorario);
             _context.SaveChanges();

@@ -15,7 +15,6 @@ namespace SportReserva.Controllers
             _clienteService = clienteService;
         }
 
-        // Acceso exclusivo para que el administrador vea todos los clientes
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
@@ -23,7 +22,6 @@ namespace SportReserva.Controllers
             return View(clientes);
         }
 
-        // Acceso para que el cliente logueado vea su propia información
         [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> MiPerfil()
         {

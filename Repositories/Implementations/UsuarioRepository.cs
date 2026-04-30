@@ -22,7 +22,6 @@ namespace SportReserva.Repositories.Implementations
             
             if (usuarioDb == null) return null;
 
-            // 3. Si existe, lo empaquetamos en el DTO para el Controlador
             return new UsuarioDTO
             {
                 IdUsuario = usuarioDb.IdUsuario,

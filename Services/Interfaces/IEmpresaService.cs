@@ -8,5 +8,7 @@ namespace SportReserva.Services
     {
         Task<IEnumerable<EmpresaDTO>> ObtenerTodasAsync();
         Task<EmpresaDTO?> ObtenerPorIdAsync(int id);
+        IEnumerable<CanchaDTO> ObtenerCanchasDeEmpresa(int idEmpresa);
+        void AgregarCancha(CanchaDTO canchaDTO);
     }
 }

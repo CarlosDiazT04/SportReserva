@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// Configuración de BD Real usando SQL Server
 builder.Services.AddDbContext<Conexion>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("conexionSQL")));
 
@@ -24,21 +23,22 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Login/Forbidden";
     });
 
-// Inyección de Dependencias
 builder.Services.AddScoped<ICanchaRepository, CanchaRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IHorarioRepository, HorarioRepository>();
 builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICanchaService, CanchaService>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IHorarioService, HorarioService>();
 
 var app = builder.Build();
 
-// Configuración de Cabeceras para Codespaces/Proxies
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | 
@@ -60,31 +60,24 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// ==========================================
-// SECCIÓN DE SEED DATA (DATOS INICIALES)
-// ==========================================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<Conexion>();
 
-    // Aplica las migraciones pendientes automáticamente
     context.Database.Migrate();
 
-    // 1. Verificamos y creamos el admin
     if (!context.Usuarios.Any(u => u.NombreUsuario == "admin"))
     {
         context.Usuarios.Add(new Usuario { NombreUsuario = "admin", Clave = "123", Rol = "Admin" });
     }
     
-    // 2. Verificamos y creamos el cliente
     if (!context.Usuarios.Any(u => u.NombreUsuario == "cliente"))
     {
         context.Usuarios.Add(new Usuario { NombreUsuario = "cliente", Clave = "123", Rol = "Cliente" });
     }
-    context.SaveChanges(); // Guardamos para que se generen los IDs
+    context.SaveChanges();
 
-    // 3. Creamos el perfil de Cliente asociado al usuario "cliente"
     var usuarioCliente = context.Usuarios.FirstOrDefault(u => u.NombreUsuario == "cliente");
     if (usuarioCliente != null && !context.Clientes.Any(c => c.IdUsuario == usuarioCliente.IdUsuario))
     {
@@ -92,7 +85,6 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
-    // 4. Verificamos y creamos una empresa de prueba
     if (!context.Usuarios.Any(u => u.NombreUsuario == "empresa"))
     {
         context.Usuarios.Add(new Usuario { NombreUsuario = "empresa", Clave = "123", Rol = "Empresa" });
@@ -118,7 +110,6 @@ using (var scope = app.Services.CreateScope())
         context.SaveChanges();
     }
 
-    // 5. Creamos unas canchas para que no se vea vacío
     if (!context.Canchas.Any() && empresaTest != null)
     {
         context.Canchas.AddRange(
@@ -127,7 +118,6 @@ using (var scope = app.Services.CreateScope())
         );
     }
 
-    // 6. Creamos algunos Horarios base (ej. formato 24h para turnos de noche)
     if (!context.Horarios.Any())
     {
         context.Horarios.AddRange(
@@ -140,6 +130,5 @@ using (var scope = app.Services.CreateScope())
 
     context.SaveChanges();
 }
-// ==========================================
 
 app.Run();

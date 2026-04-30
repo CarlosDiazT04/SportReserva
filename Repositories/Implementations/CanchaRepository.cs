@@ -1,5 +1,5 @@
 ﻿﻿﻿﻿using SportReserva.Models.DTOs;
-using SportReserva.Repositories.Interfaces; // <-- 1. Este using es obligatorio
+using SportReserva.Repositories.Interfaces;
 using SportReserva.Data;
 using System.Linq;
 using SportReserva.Models.Entities;
@@ -50,7 +50,7 @@ namespace SportReserva.Repositories.Implementations
             var entidad = _context.Canchas.Find(id);
             if (entidad != null)
             {
-                entidad.Estado = "Inactivo"; // Marcado lógico
+                entidad.Estado = "Inactivo";
                 _context.SaveChanges();
             }
         }
@@ -87,10 +87,8 @@ namespace SportReserva.Repositories.Implementations
                 }).ToList();
         }
 
-        // Reemplaza SOLO el método ObtenerTodas() con esto:
         public IEnumerable<CanchaDTO> ObtenerTodas()
         {
-            // Obteniendo datos reales desde la base de datos
             return _context.Canchas.Select(c => new CanchaDTO
             {
                 IdCancha = c.IdCancha,
