@@ -1,7 +1,6 @@
-﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
-using SportReserva.Repositories.Interfaces;
 using SportReserva.Services;
 
 namespace SportReserva.Controllers
@@ -10,14 +9,14 @@ namespace SportReserva.Controllers
     {
         private readonly IReservaService _reservaService;
         private readonly ICanchaService _canchaService;
-        private readonly IHorarioRepository _horarioRepo;
+        private readonly IHorarioService _horarioService;
         private readonly IEmpresaService _empresaService;
 
-        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioRepository horarioRepo, IEmpresaService empresaService)
+        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioService horarioService, IEmpresaService empresaService)
         {
             _reservaService = reservaService;
             _canchaService = canchaService;
-            _horarioRepo = horarioRepo;
+            _horarioService = horarioService;
             _empresaService = empresaService;
         }
 
@@ -30,14 +29,14 @@ namespace SportReserva.Controllers
         [HttpPost]
         public IActionResult Confirm(int id)
         {
-            _reservaService.CambiarEstado(id, "Confirmada");
+            _reservaService.ActualizarEstado(id, "Confirmada");
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         public IActionResult Cancel(int id)
         {
-            _reservaService.CambiarEstado(id, "Cancelada");
+            _reservaService.ActualizarEstado(id, "Cancelada");
             return RedirectToAction(nameof(Index));
         }
 
@@ -45,7 +44,7 @@ namespace SportReserva.Controllers
         public IActionResult Disponibilidad(DateTime? fecha, string deporte)
         {
             DateTime targetDate = fecha ?? DateTime.Now.Date;
-            ViewBag.Horarios = _horarioRepo.ObtenerTodos();
+            ViewBag.Horarios = _horarioService.ObtenerTodos();
             ViewBag.Canchas = string.IsNullOrEmpty(deporte) ? 
                               _canchaService.ObtenerTodas().ToList() : 
                               _canchaService.ObtenerTodas().Where(c => c.TipoDeporte == deporte).ToList();
@@ -63,12 +62,12 @@ namespace SportReserva.Controllers
         public async Task<IActionResult> Create(int idCancha, DateTime fecha, int idHorario)
         {
             var cancha = _canchaService.ObtenerTodas().FirstOrDefault(c => c.IdCancha == idCancha);
-            var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == idHorario);
+            var horario = _horarioService.ObtenerTodos().FirstOrDefault(h => h.IdHorario == idHorario);
 
             if (cancha == null || horario == null) return NotFound("Datos no encontrados");
             
             // 👇 AGREGA AWAIT AQUÍ 👇
-            var empresas = await _empresaService.ObtenerTodas();
+            var empresas = await _empresaService.ObtenerTodasAsync();
             var empresa = empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId);
 
             var reserva = new ReservaDTO
@@ -109,11 +108,7 @@ namespace SportReserva.Controllers
 
             if (ModelState.IsValid)
             {
-                bool existeCruce = _reservaService.ObtenerTodas()
-                    .Any(r => r.IdCancha == reservaDTO.IdCancha 
-                        && r.FechaReserva.Date == reservaDTO.FechaReserva.Date 
-                        && r.IdHorario == reservaDTO.IdHorario 
-                        && r.EstadoReserva != "Cancelada");
+                bool existeCruce = _reservaService.ExisteCruce(reservaDTO.IdCancha, reservaDTO.FechaReserva, reservaDTO.IdHorario);
 
                 if (existeCruce)
                 {
@@ -121,12 +116,15 @@ namespace SportReserva.Controllers
                 }
                 else
                 {
-                    bool registroExitoso = _reservaService.RegistrarReserva(reservaDTO);
-                    if (registroExitoso)
+                    try 
                     {
+                        reservaDTO.EstadoReserva = "Pendiente";
+                        reservaDTO.FechaRegistro = DateTime.Now;
+                        
+                        _reservaService.Agregar(reservaDTO);
                         return RedirectToAction(nameof(MisReservas));
                     }
-                    else
+                    catch
                     {
                         ModelState.AddModelError(string.Empty, "Ocurrió un error al procesar el registro de la reserva.");
                     }
@@ -134,12 +132,12 @@ namespace SportReserva.Controllers
             }
 
             var cancha = _canchaService.ObtenerTodas().FirstOrDefault(c => c.IdCancha == reservaDTO.IdCancha);
-            var horario = _horarioRepo.ObtenerTodos().FirstOrDefault(h => h.IdHorario == reservaDTO.IdHorario);
+            var horario = _horarioService.ObtenerTodos().FirstOrDefault(h => h.IdHorario == reservaDTO.IdHorario);
             ViewBag.CanchaNombre = cancha?.Nombre;
             ViewBag.HorarioTexto = horario != null ? $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}" : "";
             
             // 👇 AGREGA AWAIT AQUÍ 👇
-            var empresas = await _empresaService.ObtenerTodas();
+            var empresas = await _empresaService.ObtenerTodasAsync();
             var empresa = cancha != null ? empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
             
             ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";

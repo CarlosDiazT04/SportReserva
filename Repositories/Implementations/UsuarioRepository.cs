@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿﻿using System.Linq;
 using SportReserva.Data;
 using SportReserva.Models.Entities;
 using SportReserva.Models.DTOs;
@@ -33,27 +33,56 @@ namespace SportReserva.Repositories.Implementations
         }
         public void Actualizar(UsuarioDTO usuario)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Usuarios.Find(usuario.IdUsuario);
+            if (entidad != null)
+            {
+                entidad.NombreUsuario = usuario.NombreUsuario;
+                entidad.Clave = usuario.Clave;
+                entidad.Rol = usuario.Rol;
+                _context.SaveChanges();
+            }
         }
 
         public void Agregar(UsuarioDTO usuario)
         {
-            throw new NotImplementedException();
+            var entidad = new Usuario
+            {
+                NombreUsuario = usuario.NombreUsuario,
+                Clave = usuario.Clave,
+                Rol = usuario.Rol
+            };
+            _context.Usuarios.Add(entidad);
+            _context.SaveChanges();
+            usuario.IdUsuario = entidad.IdUsuario;
         }
 
         public void Desactivar(int id)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Usuarios.Find(id);
+            if (entidad != null)
+            {
+                _context.Usuarios.Remove(entidad);
+                _context.SaveChanges();
+            }
         }
 
         public UsuarioDTO ObtenerPorId(int id)
         {
-            throw new NotImplementedException();
+            var u = _context.Usuarios.Find(id);
+            if (u == null) return null;
+            
+            return new UsuarioDTO { IdUsuario = u.IdUsuario, NombreUsuario = u.NombreUsuario, Clave = u.Clave, Rol = u.Rol };
         }
 
         public IEnumerable<UsuarioDTO> ObtenerTodos()
         {
-            throw new NotImplementedException();
+            return _context.Usuarios.Select(u => new UsuarioDTO
+            {
+                IdUsuario = u.IdUsuario,
+                NombreUsuario = u.NombreUsuario,
+                Clave = u.Clave,
+                Rol = u.Rol
+            }).ToList();
         }
 
     }

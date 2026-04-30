@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SportReserva.Data;
@@ -19,7 +19,17 @@ namespace SportReserva.Repositories.Implementations
 
         public void Actualizar(ReservaDTO reserva)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Reservas.Find(reserva.IdReserva);
+            if (entidad != null)
+            {
+                entidad.IdCliente = reserva.IdCliente;
+                entidad.IdCancha = reserva.IdCancha;
+                entidad.IdHorario = reserva.IdHorario;
+                entidad.FechaReserva = reserva.FechaReserva;
+                entidad.PrecioTotal = reserva.PrecioTotal;
+                entidad.EstadoReserva = reserva.EstadoReserva;
+                _context.SaveChanges();
+            }
         }
 
         public void Agregar(ReservaDTO reserva)
@@ -57,7 +67,19 @@ namespace SportReserva.Repositories.Implementations
 
         public ReservaDTO ObtenerPorId(int id)
         {
-            throw new NotImplementedException();
+            var r = _context.Reservas.Find(id);
+            if (r == null) return null;
+            return new ReservaDTO
+            {
+                IdReserva = r.IdReserva,
+                IdCliente = r.IdCliente,
+                IdCancha = r.IdCancha,
+                IdHorario = r.IdHorario,
+                FechaReserva = r.FechaReserva,
+                FechaRegistro = r.FechaRegistro,
+                PrecioTotal = r.PrecioTotal,
+                EstadoReserva = r.EstadoReserva
+            };
         }
         
         public IEnumerable<ReservaDTO> ObtenerTodas()

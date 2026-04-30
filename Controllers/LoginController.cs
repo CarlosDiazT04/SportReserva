@@ -1,12 +1,10 @@
-﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Authentication;
+﻿﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
 using System.Security.Claims;
-using SportReserva.Data;
-using SportReserva.Models.Entities;
 
 namespace SportReserva.Controllers
 {
@@ -15,13 +13,11 @@ namespace SportReserva.Controllers
     public class LoginController : Controller
     {
         private readonly IAuthService _authService;
-        private readonly Conexion _context;
 
-        // Inyectamos solo el servicio de autenticación, no el repositorio
-        public LoginController(IAuthService authService, Conexion context)
+        // Inyectamos solo el servicio de autenticación
+        public LoginController(IAuthService authService)
         {
             _authService = authService;
-            _context = context;
         }
 
         [HttpGet]
@@ -84,27 +80,12 @@ namespace SportReserva.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+                var resultado = await _authService.RegistrarClienteAsync(dto);
+                if (!resultado.Exito)
                 {
-                    ModelState.AddModelError(string.Empty, "El nombre de usuario ya está en uso.");
+                    ModelState.AddModelError(string.Empty, resultado.Mensaje);
                     return View(dto);
                 }
-
-                var nuevoUsuario = new Usuario { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Cliente" };
-                _context.Usuarios.Add(nuevoUsuario);
-                await _context.SaveChangesAsync();
-
-                var nuevoCliente = new Cliente 
-                { 
-                    Nombres = dto.Nombres, 
-                    Apellidos = dto.Apellidos, 
-                    DNI = dto.DNI, 
-                    Telefono = dto.Telefono, 
-                    Correo = dto.Correo, 
-                    IdUsuario = nuevoUsuario.IdUsuario 
-                };
-                _context.Clientes.Add(nuevoCliente);
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index"); // Se envía al login para que inicie sesión
             }
@@ -124,29 +105,12 @@ namespace SportReserva.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_context.Usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+                var resultado = await _authService.RegistrarEmpresaAsync(dto);
+                if (!resultado.Exito)
                 {
-                    ModelState.AddModelError(string.Empty, "El nombre de usuario de la empresa ya está en uso.");
+                    ModelState.AddModelError(string.Empty, resultado.Mensaje);
                     return View(dto);
                 }
-
-                var nuevoUsuario = new Usuario { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Empresa" };
-                _context.Usuarios.Add(nuevoUsuario);
-                await _context.SaveChangesAsync();
-
-                var nuevaEmpresa = new Empresa 
-                { 
-                    Nombre = dto.Nombre, 
-                    RUC = dto.RUC, 
-                    Direccion = dto.Direccion, 
-                    Telefono = dto.Telefono, 
-                    UrlMapa = dto.UrlMapa,
-                    UrlQR = dto.UrlQR,
-                    IdUsuario = nuevoUsuario.IdUsuario,
-                    FechaRegistro = DateTime.Now
-                };
-                _context.Empresas.Add(nuevaEmpresa);
-                await _context.SaveChangesAsync();
 
                 return RedirectToAction("Index"); 
             }

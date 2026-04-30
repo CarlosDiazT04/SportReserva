@@ -1,26 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SportReserva.Data;
-using SportReserva.Models.Entities;
+using SportReserva.Models.DTOs;
+using SportReserva.Services;
 
 namespace SportReserva.Controllers
 {
     [Authorize]
     public class ClienteController : Controller
     {
-        private readonly Conexion _context;
+        private readonly IClienteService _clienteService;
 
-        public ClienteController(Conexion context)
+        public ClienteController(IClienteService clienteService)
         {
-            _context = context;
+            _clienteService = clienteService;
         }
 
         // Acceso exclusivo para que el administrador vea todos los clientes
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            var clientes = await _context.Clientes.ToListAsync();
+            var clientes = await _clienteService.ObtenerTodosAsync();
             return View(clientes);
         }
 
@@ -31,7 +30,7 @@ namespace SportReserva.Controllers
             var clienteIdClaim = User.Claims.FirstOrDefault(c => c.Type == "IdCliente")?.Value;
             if (int.TryParse(clienteIdClaim, out int idCliente))
             {
-                var cliente = await _context.Clientes.FirstOrDefaultAsync(c => c.IdCliente == idCliente);
+                var cliente = await _clienteService.ObtenerPorIdAsync(idCliente);
                 if (cliente != null) return View(cliente);
             }
             

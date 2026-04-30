@@ -1,4 +1,4 @@
-﻿﻿using SportReserva.Models.DTOs;
+﻿﻿﻿﻿using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces; // <-- 1. Este using es obligatorio
 using SportReserva.Data;
 using System.Linq;
@@ -17,7 +17,17 @@ namespace SportReserva.Repositories.Implementations
 
         public void Actualizar(CanchaDTO cancha)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Canchas.Find(cancha.IdCancha);
+            if (entidad != null)
+            {
+                entidad.Nombre = cancha.Nombre;
+                entidad.TipoDeporte = cancha.TipoDeporte;
+                entidad.PrecioHora = cancha.PrecioHora;
+                entidad.Estado = cancha.Estado;
+                entidad.Descripcion = cancha.Descripcion;
+                entidad.EmpresaId = cancha.EmpresaId;
+                _context.SaveChanges();
+            }
         }
 
         public void Agregar(CanchaDTO cancha)
@@ -37,12 +47,28 @@ namespace SportReserva.Repositories.Implementations
 
         public void Desactivar(int id)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Canchas.Find(id);
+            if (entidad != null)
+            {
+                entidad.Estado = "Inactivo"; // Marcado lógico
+                _context.SaveChanges();
+            }
         }
 
         public CanchaDTO ObtenerPorId(int id)
         {
-            throw new NotImplementedException();
+            var c = _context.Canchas.Find(id);
+            if (c == null) return null;
+            return new CanchaDTO
+            {
+                IdCancha = c.IdCancha,
+                Nombre = c.Nombre,
+                TipoDeporte = c.TipoDeporte,
+                PrecioHora = c.PrecioHora,
+                Estado = c.Estado,
+                Descripcion = c.Descripcion,
+                EmpresaId = c.EmpresaId
+            };
         }
 
         public IEnumerable<CanchaDTO> ObtenerPorEmpresa(int idEmpresa)
@@ -72,7 +98,8 @@ namespace SportReserva.Repositories.Implementations
                 TipoDeporte = c.TipoDeporte,
                 PrecioHora = c.PrecioHora,
                 Estado = c.Estado,
-                Descripcion = c.Descripcion
+                Descripcion = c.Descripcion,
+                EmpresaId = c.EmpresaId
             }).ToList();
         }
     }

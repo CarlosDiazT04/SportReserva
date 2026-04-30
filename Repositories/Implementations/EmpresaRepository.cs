@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SportReserva.Data;
+using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 using SportReserva.Repositories.Interfaces;
 using System.Collections.Generic;
@@ -16,20 +17,55 @@ namespace SportReserva.Repositories.Implementations
             _context = context;
         }
 
-        public async Task AgregarAsync(Empresa empresa)
+        public async Task AgregarAsync(EmpresaDTO empresa)
         {
-            await _context.Empresas.AddAsync(empresa);
+            var entidad = new Empresa
+            {
+                Nombre = empresa.Nombre,
+                RUC = empresa.RUC,
+                Direccion = empresa.Direccion,
+                Telefono = empresa.Telefono,
+                UrlMapa = empresa.UrlMapa,
+                UrlQR = empresa.UrlQR,
+                IdUsuario = empresa.IdUsuario,
+                FechaRegistro = empresa.FechaRegistro
+            };
+            await _context.Empresas.AddAsync(entidad);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Empresa?> ObtenerPorIdAsync(int id)
+        public async Task<EmpresaDTO?> ObtenerPorIdAsync(int id)
         {
-            return await _context.Empresas.FindAsync(id);
+            var e = await _context.Empresas.FindAsync(id);
+            if (e == null) return null;
+            return new EmpresaDTO
+            {
+                EmpresaId = e.EmpresaId,
+                Nombre = e.Nombre,
+                RUC = e.RUC,
+                Direccion = e.Direccion,
+                Telefono = e.Telefono,
+                UrlMapa = e.UrlMapa,
+                UrlQR = e.UrlQR,
+                IdUsuario = e.IdUsuario,
+                FechaRegistro = e.FechaRegistro
+            };
         }
 
-        public async Task<IEnumerable<Empresa>> ObtenerTodasAsync()
+        public async Task<IEnumerable<EmpresaDTO>> ObtenerTodasAsync()
         {
-            return await _context.Empresas.ToListAsync();
+            return await _context.Empresas.Select(e => new EmpresaDTO
+            {
+                EmpresaId = e.EmpresaId,
+                Nombre = e.Nombre,
+                RUC = e.RUC,
+                Direccion = e.Direccion,
+                Telefono = e.Telefono,
+                UrlMapa = e.UrlMapa,
+                UrlQR = e.UrlQR,
+                IdUsuario = e.IdUsuario,
+                FechaRegistro = e.FechaRegistro
+            }).ToListAsync();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SportReserva.Data;
@@ -19,7 +19,14 @@ namespace SportReserva.Repositories.Implementations
 
         public void Actualizar(HorarioDTO horario)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Horarios.Find(horario.IdHorario);
+            if (entidad != null)
+            {
+                entidad.HoraInicio = horario.HoraInicio;
+                entidad.HoraFin = horario.HoraFin;
+                entidad.Estado = horario.Estado;
+                _context.SaveChanges();
+            }
         }
 
         public void Agregar(HorarioDTO horario)
@@ -36,12 +43,25 @@ namespace SportReserva.Repositories.Implementations
 
         public void Eliminar(int id)
         {
-            throw new NotImplementedException();
+            var entidad = _context.Horarios.Find(id);
+            if (entidad != null)
+            {
+                _context.Horarios.Remove(entidad);
+                _context.SaveChanges();
+            }
         }
 
         public HorarioDTO ObtenerPorId(int id)
         {
-            throw new NotImplementedException();
+            var h = _context.Horarios.Find(id);
+            if (h == null) return null;
+            return new HorarioDTO
+            {
+                IdHorario = h.IdHorario,
+                HoraInicio = h.HoraInicio,
+                HoraFin = h.HoraFin,
+                Estado = h.Estado
+            };
         }
 
         public IEnumerable<HorarioDTO> ObtenerTodos()

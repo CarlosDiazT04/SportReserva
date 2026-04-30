@@ -23,24 +23,17 @@ namespace SportReserva.Services
             return _reservaRepository.ObtenerPorClienteId(clienteId);
         }
 
-        public bool RegistrarReserva(ReservaDTO reserva)
+        public void Agregar(ReservaDTO reserva)
         {
-            // REGLA DE NEGOCIO (Anexo 2): Evitar cruces de horario.
-            // Validar que la combinación Cancha + Fecha + Horario no exista.
-            bool existeCruce = _reservaRepository.ExisteCruce(reserva.IdCancha, reserva.FechaReserva, reserva.IdHorario);
-            
-            if (existeCruce)
-            {
-                return false; // No se puede registrar, horario ocupado
-            }
-
-            reserva.FechaRegistro = DateTime.Now;
-            reserva.EstadoReserva = "Pendiente";
             _reservaRepository.Agregar(reserva);
-            return true;
         }
 
-        public bool CambiarEstado(int idReserva, string nuevoEstado)
+        public bool ExisteCruce(int idCancha, DateTime fechaReserva, int idHorario)
+        {
+            return _reservaRepository.ExisteCruce(idCancha, fechaReserva, idHorario);
+        }
+
+        public bool ActualizarEstado(int idReserva, string nuevoEstado)
         {
             return _reservaRepository.ActualizarEstado(idReserva, nuevoEstado);
         }

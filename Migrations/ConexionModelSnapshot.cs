@@ -145,6 +145,12 @@ namespace SportReserva.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("UrlMapa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UrlQR")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("EmpresaId");
 
                     b.HasIndex("IdUsuario");
