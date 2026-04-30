@@ -21,6 +21,25 @@ namespace SportReserva.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Empresa>().ToTable("Empresa");
+            modelBuilder.Entity<Empresa>().HasKey(e => e.EmpresaId);
+
+            modelBuilder.Entity<Empresa>()
+            .HasOne(e => e.Usuario)
+            .WithOne(u => u.Empresa)
+            .HasForeignKey<Empresa>(e => e.IdUsuario)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Empresa>()
+                .HasIndex(e => e.RUC)
+                .IsUnique();
+
+            modelBuilder.Entity<Cancha>()
+                .HasOne(c => c.Empresa)
+                .WithMany(e => e.Canchas)
+                .HasForeignKey(c => c.EmpresaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Usuario>().ToTable("Usuario");
             modelBuilder.Entity<Cliente>().ToTable("Cliente");
             modelBuilder.Entity<Cancha>().ToTable("Cancha");

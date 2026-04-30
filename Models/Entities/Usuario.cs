@@ -16,5 +16,7 @@ namespace SportReserva.Models.Entities
         public string Estado { get; set; } = "Activo";
 
         public Cliente Cliente { get; set; }
+
+        public Empresa? Empresa { get; set; }
     }
 }
