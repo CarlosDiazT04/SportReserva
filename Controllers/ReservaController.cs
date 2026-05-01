@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
@@ -81,8 +81,9 @@ namespace SportReserva.Controllers
             ViewBag.CanchaNombre = cancha.Nombre;
             ViewBag.HorarioTexto = $"{horario.HoraInicio:hh\\:mm} - {horario.HoraFin:hh\\:mm}";
             
+            ViewBag.TitularBilletera = empresa?.Nombre ?? "Empresa No Registrada";
+            ViewBag.NumeroBilletera = string.IsNullOrEmpty(empresa?.NumeroBilletera) ? "No especificado" : empresa.NumeroBilletera;
             ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
-            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa?.UrlQR;
             ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";
             ViewBag.UrlMapa = empresa?.UrlMapa;
 
@@ -138,8 +139,9 @@ namespace SportReserva.Controllers
             var empresas = await _empresaService.ObtenerTodasAsync();
             var empresa = cancha != null ? empresas.FirstOrDefault(e => e.EmpresaId == cancha.EmpresaId) : null;
             
+            ViewBag.TitularBilletera = empresa?.Nombre ?? "Empresa No Registrada";
+            ViewBag.NumeroBilletera = string.IsNullOrEmpty(empresa?.NumeroBilletera) ? "No especificado" : empresa?.NumeroBilletera;
             ViewBag.TelefonoEmpresa = empresa?.Telefono ?? "No registrado";
-            ViewBag.QrEmpresa = string.IsNullOrEmpty(empresa?.UrlQR) ? "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" : empresa?.UrlQR;
             ViewBag.DireccionEmpresa = empresa?.Direccion ?? "No registrada";
             ViewBag.UrlMapa = empresa?.UrlMapa;
 

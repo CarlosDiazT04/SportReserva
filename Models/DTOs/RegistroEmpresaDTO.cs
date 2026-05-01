@@ -17,12 +17,17 @@ namespace SportReserva.Models.DTOs
         [Required]
         public string RUC { get; set; }
 
+        [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
+        [EmailAddress(ErrorMessage = "Formato de correo no válido.")]
+        public string Correo { get; set; } = string.Empty;
+
         [Required]
         public string Direccion { get; set; }
 
         public string Telefono { get; set; }
 
+        public string? NumeroBilletera { get; set; }
+
         public string? UrlMapa { get; set; }
-        public string? UrlQR { get; set; }
     }
 }

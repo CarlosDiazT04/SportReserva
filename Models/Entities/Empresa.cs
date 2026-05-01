@@ -37,6 +37,6 @@ namespace SportReserva.Models.Entities
         public ICollection<Cancha> Canchas { get; set; }
 
         public string? UrlMapa { get; set; }
-        public string? UrlQR { get; set; }
+        public string? NumeroBilletera { get; set; }
     }
 }

@@ -25,8 +25,9 @@ namespace SportReserva.Repositories.Implementations
                 RUC = empresa.RUC,
                 Direccion = empresa.Direccion,
                 Telefono = empresa.Telefono,
+                Email = empresa.Correo,
                 UrlMapa = empresa.UrlMapa,
-                UrlQR = empresa.UrlQR,
+                NumeroBilletera = empresa.NumeroBilletera,
                 IdUsuario = empresa.IdUsuario,
                 FechaRegistro = empresa.FechaRegistro
             };
@@ -50,8 +51,9 @@ namespace SportReserva.Repositories.Implementations
                 RUC = e.RUC,
                 Direccion = e.Direccion,
                 Telefono = e.Telefono,
+                Correo = e.Email,
                 UrlMapa = e.UrlMapa,
-                UrlQR = e.UrlQR,
+                NumeroBilletera = e.NumeroBilletera,
                 IdUsuario = e.IdUsuario,
                 FechaRegistro = e.FechaRegistro
             };
@@ -66,8 +68,9 @@ namespace SportReserva.Repositories.Implementations
                 RUC = e.RUC,
                 Direccion = e.Direccion,
                 Telefono = e.Telefono,
+                Correo = e.Email,
                 UrlMapa = e.UrlMapa,
-                UrlQR = e.UrlQR,
+                NumeroBilletera = e.NumeroBilletera,
                 IdUsuario = e.IdUsuario,
                 FechaRegistro = e.FechaRegistro
             }).ToListAsync();

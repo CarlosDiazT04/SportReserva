@@ -48,13 +48,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="NumeroBilletera" class="form-label fw-bold small">Número Yape/Plin</label>
+                        <input asp-for="NumeroBilletera" type="text" class="form-control" placeholder="Ej: 999999999" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
                         <label asp-for="UrlMapa" class="form-label fw-bold small">URL de Google Maps (Opcional)</label>
                         <input asp-for="UrlMapa" type="text" class="form-control" placeholder="Ej: https://maps.app.goo.gl/..." />
-                    </div>
-                    <div class="col-md-6 mb-4">
-                        <label asp-for="UrlQR" class="form-label fw-bold small">Enlace del QR (Yape/Plin)</label>
-                        <input asp-for="UrlQR" type="text" class="form-control" placeholder="URL de la imagen de tu QR" />
                     </div>
                 </div>
 

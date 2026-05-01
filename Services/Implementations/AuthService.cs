@@ -93,15 +93,24 @@ namespace SportReserva.Services
                 RUC = dto.RUC,
                 Direccion = dto.Direccion,
                 Telefono = dto.Telefono,
+                Correo = dto.Correo,
                 UrlMapa = dto.UrlMapa,
-                UrlQR = dto.UrlQR,
+                NumeroBilletera = dto.NumeroBilletera,
                 IdUsuario = nuevoUsuario.IdUsuario,
                 FechaRegistro = DateTime.Now
             };
 
-            await _empresaRepo.AgregarAsync(nuevaEmpresa);
-
-            return new ResultadoRegistroDTO { Exito = true };
+            try
+            {
+                await _empresaRepo.AgregarAsync(nuevaEmpresa);
+                return new ResultadoRegistroDTO { Exito = true };
+            }
+            catch (Exception ex)
+            {
+                // Si el guardado falla, avisamos al controlador.
+                // En una app robusta, aquí es ideal aplicar un Rollback o borrar el usuario recién creado.
+                return new ResultadoRegistroDTO { Exito = false, Mensaje = "Ocurrió un error al registrar los datos de la empresa. Revisa la información." };
+            }
         }
     }
 }

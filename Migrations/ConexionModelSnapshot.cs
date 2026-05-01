@@ -135,6 +135,9 @@ namespace SportReserva.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("NumeroBilletera")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RUC")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -148,14 +151,15 @@ namespace SportReserva.Migrations
                     b.Property<string>("UrlMapa")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UrlQR")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("EmpresaId");
 
-                    b.HasIndex("IdUsuario");
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
 
-                    b.ToTable("Empresas");
+                    b.HasIndex("RUC")
+                        .IsUnique();
+
+                    b.ToTable("Empresas", (string)null);
                 });
 
             modelBuilder.Entity("SportReserva.Models.Entities.Horario", b =>
@@ -298,7 +302,7 @@ namespace SportReserva.Migrations
                     b.HasOne("SportReserva.Models.Entities.Empresa", "Empresa")
                         .WithMany("Canchas")
                         .HasForeignKey("EmpresaId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Empresa");
@@ -318,9 +322,9 @@ namespace SportReserva.Migrations
             modelBuilder.Entity("SportReserva.Models.Entities.Empresa", b =>
                 {
                     b.HasOne("SportReserva.Models.Entities.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne("Empresa")
+                        .HasForeignKey("SportReserva.Models.Entities.Empresa", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Usuario");
@@ -393,6 +397,8 @@ namespace SportReserva.Migrations
                 {
                     b.Navigation("Cliente")
                         .IsRequired();
+
+                    b.Navigation("Empresa");
                 });
 #pragma warning restore 612, 618
         }
