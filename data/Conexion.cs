@@ -21,7 +21,7 @@ namespace SportReserva.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Empresa>().ToTable("Empresa");
+            modelBuilder.Entity<Empresa>().ToTable("Empresas");
             modelBuilder.Entity<Empresa>().HasKey(e => e.EmpresaId);
 
             modelBuilder.Entity<Empresa>()
