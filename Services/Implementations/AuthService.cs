@@ -35,7 +35,8 @@ namespace SportReserva.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, usuario.NombreUsuario),
-                new Claim(ClaimTypes.Role, usuario.Rol)
+                new Claim(ClaimTypes.Role, usuario.Rol),
+                new Claim(ClaimTypes.NameIdentifier, usuario.IdUsuario.ToString())
             };
 
             if (usuario.Rol == "Cliente")
