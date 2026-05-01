@@ -1,6 +1,8 @@
-﻿﻿﻿﻿﻿﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using SportReserva.Services;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SportReserva.Controllers
 {
@@ -8,16 +10,41 @@ namespace SportReserva.Controllers
     public class CanchaController : Controller
     {
         private readonly ICanchaService _canchaService;
+        private readonly IEmpresaService _empresaService;
 
-        public CanchaController(ICanchaService canchaService)
+        public CanchaController(ICanchaService canchaService, IEmpresaService empresaService)
         {
             _canchaService = canchaService;
+            _empresaService = empresaService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var canchas = _canchaService.ObtenerTodas();
-            return View(canchas);
+            if (User.IsInRole("Admin"))
+            {
+                var todasLasCanchas = _canchaService.ObtenerTodas();
+                return View(todasLasCanchas);
+            }
+
+            if (User.IsInRole("Empresa"))
+            {
+                var idUsuarioString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+                if (int.TryParse(idUsuarioString, out int idUsuario))
+                {
+                    var empresa = await _empresaService.ObtenerPorUsuarioIdAsync(idUsuario);
+
+                    if (empresa == null)
+                    {
+                        return RedirectToAction("Create", "Empresa"); 
+                    }
+
+                    var canchasDeLaEmpresa = _empresaService.ObtenerCanchasDeEmpresa(empresa.EmpresaId);
+                    return View(canchasDeLaEmpresa);
+                }
+            }
+
+            return Forbid();
         }
     }
 }

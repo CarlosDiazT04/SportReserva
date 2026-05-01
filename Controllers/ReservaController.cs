@@ -4,6 +4,7 @@ using SportReserva.Models.DTOs;
 using SportReserva.Services;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SportReserva.Controllers
@@ -23,10 +24,31 @@ namespace SportReserva.Controllers
             _empresaService = empresaService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var reservas = _reservaService.ObtenerTodas();
-            return View(reservas);
+            if (User.IsInRole("Admin"))
+            {
+                var todasLasReservas = _reservaService.ObtenerTodas();
+                return View(todasLasReservas);
+            }
+
+            if (User.IsInRole("Empresa"))
+            {
+                var idUsuarioString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                
+                if (int.TryParse(idUsuarioString, out int idUsuario))
+                {
+                    var empresa = await _empresaService.ObtenerPorUsuarioIdAsync(idUsuario);
+
+                    if (empresa != null)
+                    {
+                        var reservasDeEmpresa = _reservaService.ObtenerPorEmpresaId(empresa.EmpresaId);
+                        return View(reservasDeEmpresa);
+                    }
+                }
+            }
+
+            return Forbid();
         }
 
         [HttpPost]
@@ -154,6 +176,33 @@ namespace SportReserva.Controllers
             int clienteId = int.TryParse(clienteIdClaim, out int id) ? id : 0;
             var misReservas = _reservaService.ObtenerPorClienteId(clienteId);
             return View(misReservas);
+        }
+
+        [Authorize(Roles = "Empresa")]
+        [HttpPost]
+        public IActionResult BloquearSlot(int idCancha, DateTime fecha, int idHorario)
+        {
+            try 
+            {
+                var bloqueo = new ReservaDTO
+                {
+                    IdCancha = idCancha,
+                    FechaReserva = fecha,
+                    IdHorario = idHorario,
+                    FechaRegistro = DateTime.Now,
+                    EstadoReserva = "Bloqueada",
+                    PrecioTotal = 0,
+                    IdCliente = 1
+                };
+
+                _reservaService.Agregar(bloqueo);
+                
+                return RedirectToAction("Disponibilidad", new { fecha = fecha.ToString("yyyy-MM-dd") });
+            }
+            catch
+            {
+                return BadRequest("No se pudo realizar el bloqueo del horario.");
+            }
         }
     }
 }

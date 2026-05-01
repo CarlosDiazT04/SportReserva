@@ -38,5 +38,8 @@ namespace SportReserva.Models.Entities
 
         public string? UrlMapa { get; set; }
         public string? NumeroBilletera { get; set; }
+
+        public TimeSpan? HoraApertura { get; set; }
+        public TimeSpan? HoraCierre { get; set; }
     }
 }

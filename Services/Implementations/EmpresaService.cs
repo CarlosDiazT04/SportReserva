@@ -26,6 +26,10 @@ namespace SportReserva.Services
         {
             return await _empresaRepository.ObtenerPorIdAsync(id);
         }
+        public async Task<EmpresaDTO?> ObtenerPorUsuarioIdAsync(int idUsuario)
+        {
+            return await _empresaRepository.ObtenerPorUsuarioIdAsync(idUsuario);
+        }
 
         public IEnumerable<CanchaDTO> ObtenerCanchasDeEmpresa(int idEmpresa)
         {

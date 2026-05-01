@@ -6,5 +6,6 @@ namespace SportReserva.Services
     public interface ICanchaService
     {
         IEnumerable<CanchaDTO> ObtenerTodas();
+        IEnumerable<CanchaDTO> ObtenerPorEmpresa(int empresaId);
     }
 }

@@ -22,6 +22,11 @@ namespace SportReserva.Services
             return _reservaRepository.ObtenerPorClienteId(clienteId);
         }
 
+        public IEnumerable<ReservaDTO> ObtenerPorEmpresaId(int empresaId)
+        {
+            return _reservaRepository.ObtenerPorEmpresaId(empresaId);
+        }
+
         public void Agregar(ReservaDTO reserva)
         {
             _reservaRepository.Agregar(reserva);

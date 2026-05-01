@@ -115,6 +115,24 @@
                                 </a>
                             </li>
                         }
+                        else if (User.IsInRole("Empresa"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Reserva" asp-action="Index">
+                                    <i class="fa-solid fa-calendar-check me-1"></i> Mis Reservas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Cancha" asp-action="Index">
+                                    <i class="fa-solid fa-field-hockey me-1"></i> Mis Canchas
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Empresa" asp-action="MiPerfil">
+                                    <i class="fa-solid fa-building me-1"></i> Perfil Empresa
+                                </a>
+                            </li>
+                        }
                         else if (User.IsInRole("Cliente"))
                         {
                             <li class="nav-item">

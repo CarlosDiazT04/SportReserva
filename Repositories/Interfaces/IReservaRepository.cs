@@ -7,6 +7,7 @@ namespace SportReserva.Repositories.Interfaces
     {
         IEnumerable<ReservaDTO> ObtenerTodas();
         IEnumerable<ReservaDTO> ObtenerPorClienteId(int clienteId);
+        IEnumerable<ReservaDTO> ObtenerPorEmpresaId(int empresaId);
         ReservaDTO ObtenerPorId(int id);
         void Agregar(ReservaDTO reserva);
         void Actualizar(ReservaDTO reserva);

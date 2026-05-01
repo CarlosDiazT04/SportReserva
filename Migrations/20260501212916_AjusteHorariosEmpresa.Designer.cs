@@ -12,8 +12,8 @@ using SportReserva.Data;
 namespace SportReserva.Migrations
 {
     [DbContext(typeof(Conexion))]
-    [Migration("20260501054832_Inicial")]
-    partial class Inicial
+    [Migration("20260501212916_AjusteHorariosEmpresa")]
+    partial class AjusteHorariosEmpresa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,6 +129,12 @@ namespace SportReserva.Migrations
 
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan?>("HoraApertura")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("HoraCierre")
+                        .HasColumnType("time");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");

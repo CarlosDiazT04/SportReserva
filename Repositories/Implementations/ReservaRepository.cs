@@ -5,6 +5,7 @@ using SportReserva.Data;
 using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 using SportReserva.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace SportReserva.Repositories.Implementations
 {
@@ -63,6 +64,25 @@ namespace SportReserva.Repositories.Implementations
                     PrecioTotal = r.PrecioTotal,
                     EstadoReserva = r.EstadoReserva
                 }).ToList();
+        }
+
+        public IEnumerable<ReservaDTO> ObtenerPorEmpresaId(int empresaId)
+        {
+            return _context.Reservas
+                .Include(r => r.Cancha) 
+                .Where(r => r.Cancha.EmpresaId == empresaId)
+                .Select(r => new ReservaDTO 
+                { 
+                    IdReserva = r.IdReserva,
+                    IdCliente = r.IdCliente,
+                    IdCancha = r.IdCancha,
+                    IdHorario = r.IdHorario,
+                    FechaReserva = r.FechaReserva,
+                    FechaRegistro = r.FechaRegistro,
+                    PrecioTotal = r.PrecioTotal,
+                    EstadoReserva = r.EstadoReserva
+                })
+                .ToList();
         }
 
         public ReservaDTO ObtenerPorId(int id)

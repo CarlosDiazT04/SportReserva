@@ -16,5 +16,9 @@ namespace SportReserva.Services
         {
             return _canchaRepository.ObtenerTodas();
         }
+        public IEnumerable<CanchaDTO> ObtenerPorEmpresa(int empresaId)
+        {
+            return _canchaRepository.ObtenerPorEmpresa(empresaId);
+        }
     }
 }

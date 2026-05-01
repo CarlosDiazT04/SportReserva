@@ -8,8 +8,8 @@ namespace SportReserva.Repositories.Interfaces
     public interface IEmpresaRepository
     {
         Task AgregarAsync(EmpresaDTO empresa);
-        Task AgregarAsync(Empresa empresa);
         Task<EmpresaDTO?> ObtenerPorIdAsync(int id);
         Task<IEnumerable<EmpresaDTO>> ObtenerTodasAsync();
+        Task<EmpresaDTO?> ObtenerPorUsuarioIdAsync(int idUsuario);
     }
 }

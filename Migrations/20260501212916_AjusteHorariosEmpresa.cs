@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SportReserva.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class AjusteHorariosEmpresa : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,7 +80,9 @@ namespace SportReserva.Migrations
                     Telefono = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IdUsuario = table.Column<int>(type: "int", nullable: false),
                     UrlMapa = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NumeroBilletera = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    NumeroBilletera = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HoraApertura = table.Column<TimeSpan>(type: "time", nullable: true),
+                    HoraCierre = table.Column<TimeSpan>(type: "time", nullable: true)
                 },
                 constraints: table =>
                 {

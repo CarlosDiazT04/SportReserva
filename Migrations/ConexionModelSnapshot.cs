@@ -127,6 +127,12 @@ namespace SportReserva.Migrations
                     b.Property<DateTime>("FechaRegistro")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan?>("HoraApertura")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan?>("HoraCierre")
+                        .HasColumnType("time");
+
                     b.Property<int>("IdUsuario")
                         .HasColumnType("int");
 

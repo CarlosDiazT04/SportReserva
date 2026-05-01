@@ -35,15 +35,31 @@ namespace SportReserva.Repositories.Implementations
             await _context.SaveChangesAsync();
         }
 
-        public Task AgregarAsync(Empresa empresa)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<EmpresaDTO?> ObtenerPorIdAsync(int id)
         {
             var e = await _context.Empresas.FindAsync(id);
             if (e == null) return null;
+            return new EmpresaDTO
+            {
+                EmpresaId = e.EmpresaId,
+                Nombre = e.Nombre,
+                RUC = e.RUC,
+                Direccion = e.Direccion,
+                Telefono = e.Telefono,
+                Correo = e.Email,
+                UrlMapa = e.UrlMapa,
+                NumeroBilletera = e.NumeroBilletera,
+                IdUsuario = e.IdUsuario,
+                FechaRegistro = e.FechaRegistro
+            };
+        }
+
+        public async Task<EmpresaDTO?> ObtenerPorUsuarioIdAsync(int idUsuario)
+        {
+            var e = await _context.Empresas.FirstOrDefaultAsync(x => x.IdUsuario == idUsuario);
+            
+            if (e == null) return null;
+            
             return new EmpresaDTO
             {
                 EmpresaId = e.EmpresaId,
