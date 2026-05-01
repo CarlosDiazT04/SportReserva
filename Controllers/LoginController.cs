@@ -23,7 +23,10 @@ namespace SportReserva.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Cancha");
+                if (User.IsInRole("Admin")) return RedirectToAction("Index", "Cancha");
+                if (User.IsInRole("Empresa")) return RedirectToAction("MisCanchas", "Empresa");
+                if (User.IsInRole("Cliente")) return RedirectToAction("MisReservas", "Reserva");
+                return RedirectToAction("Index", "Home");
             }
 
             return View();
@@ -51,7 +54,11 @@ namespace SportReserva.Controllers
                         ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
                     });
 
-                return RedirectToAction("Index", "Cancha");
+                var rol = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                if (rol == "Admin") return RedirectToAction("Index", "Cancha");
+                if (rol == "Empresa") return RedirectToAction("MisCanchas", "Empresa");
+                if (rol == "Cliente") return RedirectToAction("MisReservas", "Reserva");
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");

@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
@@ -34,8 +34,15 @@ namespace SportReserva.Controllers
 
             if (User.IsInRole("Empresa"))
             {
-                var idUsuarioString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                
+                var idEmpresaClaim = User.Claims.FirstOrDefault(c => c.Type == "IdEmpresa")?.Value;
+                if (int.TryParse(idEmpresaClaim, out int idEmpresa))
+                {
+                    var reservasDeEmpresa = _reservaService.ObtenerPorEmpresaId(idEmpresa);
+                    return View(reservasDeEmpresa);
+                }
+
+                var idUsuarioString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.Claims.FirstOrDefault(c => c.Type == "IdUsuario")?.Value;
+
                 if (int.TryParse(idUsuarioString, out int idUsuario))
                 {
                     var empresa = await _empresaService.ObtenerPorUsuarioIdAsync(idUsuario);
