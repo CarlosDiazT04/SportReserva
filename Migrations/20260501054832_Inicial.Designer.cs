@@ -12,8 +12,8 @@ using SportReserva.Data;
 namespace SportReserva.Migrations
 {
     [DbContext(typeof(Conexion))]
-    [Migration("20260424052319_CrearBaseSportReserva")]
-    partial class CrearBaseSportReserva
+    [Migration("20260501054832_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,13 +35,14 @@ namespace SportReserva.Migrations
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EmpresaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -53,10 +54,11 @@ namespace SportReserva.Migrations
 
                     b.Property<string>("TipoDeporte")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdCancha");
+
+                    b.HasIndex("EmpresaId");
 
                     b.ToTable("Cancha", (string)null);
                 });
@@ -99,7 +101,68 @@ namespace SportReserva.Migrations
 
                     b.HasKey("IdCliente");
 
+                    b.HasIndex("DNI")
+                        .IsUnique();
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
+
                     b.ToTable("Cliente", (string)null);
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Empresa", b =>
+                {
+                    b.Property<int>("EmpresaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmpresaId"));
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdUsuario")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NumeroBilletera")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RUC")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UrlMapa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("EmpresaId");
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique();
+
+                    b.HasIndex("RUC")
+                        .IsUnique();
+
+                    b.ToTable("Empresas", (string)null);
                 });
 
             modelBuilder.Entity("SportReserva.Models.Entities.Horario", b =>
@@ -155,6 +218,9 @@ namespace SportReserva.Migrations
 
                     b.HasKey("IdPago");
 
+                    b.HasIndex("IdReserva")
+                        .IsUnique();
+
                     b.ToTable("Pago", (string)null);
                 });
 
@@ -191,6 +257,14 @@ namespace SportReserva.Migrations
 
                     b.HasKey("IdReserva");
 
+                    b.HasIndex("IdCliente");
+
+                    b.HasIndex("IdHorario");
+
+                    b.HasIndex("IdCancha", "FechaReserva", "IdHorario")
+                        .IsUnique()
+                        .HasFilter("[EstadoReserva] <> 'Cancelada'");
+
                     b.ToTable("Reserva", (string)null);
                 });
 
@@ -204,27 +278,130 @@ namespace SportReserva.Migrations
 
                     b.Property<string>("Clave")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Estado")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NombreUsuario")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Rol")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUsuario");
 
+                    b.HasIndex("NombreUsuario")
+                        .IsUnique();
+
                     b.ToTable("Usuario", (string)null);
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Cancha", b =>
+                {
+                    b.HasOne("SportReserva.Models.Entities.Empresa", "Empresa")
+                        .WithMany("Canchas")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Cliente", b =>
+                {
+                    b.HasOne("SportReserva.Models.Entities.Usuario", "Usuario")
+                        .WithOne("Cliente")
+                        .HasForeignKey("SportReserva.Models.Entities.Cliente", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Empresa", b =>
+                {
+                    b.HasOne("SportReserva.Models.Entities.Usuario", "Usuario")
+                        .WithOne("Empresa")
+                        .HasForeignKey("SportReserva.Models.Entities.Empresa", "IdUsuario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Pago", b =>
+                {
+                    b.HasOne("SportReserva.Models.Entities.Reserva", "Reserva")
+                        .WithOne("Pago")
+                        .HasForeignKey("SportReserva.Models.Entities.Pago", "IdReserva")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reserva");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Reserva", b =>
+                {
+                    b.HasOne("SportReserva.Models.Entities.Cancha", "Cancha")
+                        .WithMany("Reservas")
+                        .HasForeignKey("IdCancha")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SportReserva.Models.Entities.Cliente", "Cliente")
+                        .WithMany("Reservas")
+                        .HasForeignKey("IdCliente")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SportReserva.Models.Entities.Horario", "Horario")
+                        .WithMany("Reservas")
+                        .HasForeignKey("IdHorario")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cancha");
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Horario");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Cancha", b =>
+                {
+                    b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Cliente", b =>
+                {
+                    b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Empresa", b =>
+                {
+                    b.Navigation("Canchas");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Horario", b =>
+                {
+                    b.Navigation("Reservas");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Reserva", b =>
+                {
+                    b.Navigation("Pago");
+                });
+
+            modelBuilder.Entity("SportReserva.Models.Entities.Usuario", b =>
+                {
+                    b.Navigation("Cliente")
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
                 });
 #pragma warning restore 612, 618
         }

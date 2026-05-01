@@ -14,7 +14,6 @@
 *.userprefs
 update_db.sql
 
-Migrations/
 # Mono auto generated files
 mono_crash.*
 
