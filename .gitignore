@@ -12,6 +12,7 @@
 .continue
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+update_db.sql
 
 Migrations/
 # Mono auto generated files
