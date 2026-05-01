@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using SportReserva.Models.DTOs;
 using SportReserva.Repositories.Interfaces;
 
@@ -23,8 +24,13 @@ namespace SportReserva.Services
 
         public async Task<ClaimsPrincipal> Authenticate(LoginDTO loginDTO)
         {
-            var usuario = _usuarioRepo.ValidarLogin(loginDTO.NombreUsuario, loginDTO.Clave);
+            var usuario = _usuarioRepo.ObtenerPorNombreUsuario(loginDTO.NombreUsuario);
+            
             if (usuario == null) return null;
+
+            var hasher = new PasswordHasher<string>();
+            var validacion = hasher.VerifyHashedPassword(null, usuario.Clave, loginDTO.Clave);
+            if (validacion == PasswordVerificationResult.Failed) return null;
 
             var claims = new List<Claim>
             {
@@ -51,13 +57,16 @@ namespace SportReserva.Services
 
         public async Task<ResultadoRegistroDTO> RegistrarClienteAsync(RegistroDTO dto)
         {
-            var usuarios = _usuarioRepo.ObtenerTodos();
-            if (usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+            var usuarioExistente = _usuarioRepo.ObtenerPorNombreUsuario(dto.NombreUsuario);
+            if (usuarioExistente != null)
             {
                 return new ResultadoRegistroDTO { Exito = false, Mensaje = "El nombre de usuario ya está en uso." };
             }
 
-            var nuevoUsuario = new UsuarioDTO { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Cliente" };
+            var hasher = new PasswordHasher<string>();
+            string claveHasheada = hasher.HashPassword(null, dto.Clave);
+
+            var nuevoUsuario = new UsuarioDTO { NombreUsuario = dto.NombreUsuario, Clave = claveHasheada, Rol = "Cliente" };
             _usuarioRepo.Agregar(nuevoUsuario);
 
             var nuevoCliente = new ClienteDTO
@@ -78,13 +87,16 @@ namespace SportReserva.Services
 
         public async Task<ResultadoRegistroDTO> RegistrarEmpresaAsync(RegistroEmpresaDTO dto)
         {
-            var usuarios = _usuarioRepo.ObtenerTodos();
-            if (usuarios.Any(u => u.NombreUsuario == dto.NombreUsuario))
+            var usuarioExistente = _usuarioRepo.ObtenerPorNombreUsuario(dto.NombreUsuario);
+            if (usuarioExistente != null)
             {
                 return new ResultadoRegistroDTO { Exito = false, Mensaje = "El nombre de usuario de la empresa ya está en uso." };
             }
 
-            var nuevoUsuario = new UsuarioDTO { NombreUsuario = dto.NombreUsuario, Clave = dto.Clave, Rol = "Empresa" };
+            var hasher = new PasswordHasher<string>();
+            string claveHasheada = hasher.HashPassword(null, dto.Clave);
+
+            var nuevoUsuario = new UsuarioDTO { NombreUsuario = dto.NombreUsuario, Clave = claveHasheada, Rol = "Empresa" };
             _usuarioRepo.Agregar(nuevoUsuario);
 
             var nuevaEmpresa = new EmpresaDTO

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using SportReserva.Services;
 using SportReserva.Services.Implementations;
+using Microsoft.AspNetCore.Identity;
+using SportReserva.Models.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -70,7 +72,25 @@ using (var scope = app.Services.CreateScope())
     try 
     {
         var context = services.GetRequiredService<Conexion>();
+        var config = services.GetRequiredService<IConfiguration>();
+        
         context.Database.Migrate();
+
+            if (!context.Usuarios.Any(u => u.NombreUsuario == "admin"))
+            {
+                string passwordAdmin = config["AdminPassword"] ?? "admin123";
+
+                var hasher = new PasswordHasher<Usuario>();
+                var adminUser = new Usuario
+                {
+                    NombreUsuario = "admin",
+                    Clave = hasher.HashPassword(null!, passwordAdmin),
+                    Rol = "Admin"
+                };
+                
+                context.Usuarios.Add(adminUser);
+                context.SaveChanges();
+            }
     }
     catch (Exception ex)
     {

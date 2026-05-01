@@ -1,4 +1,4 @@
-﻿﻿using System.Linq;
+﻿﻿﻿﻿using System.Linq;
 using SportReserva.Data;
 using SportReserva.Models.Entities;
 using SportReserva.Models.DTOs;
@@ -15,10 +15,10 @@ namespace SportReserva.Repositories.Implementations
             _context = context;
         }
 
-        public UsuarioDTO? ValidarLogin(string username, string clave)
+        public UsuarioDTO? ObtenerPorNombreUsuario(string username)
         {
             var usuarioDb = _context.Usuarios
-                .FirstOrDefault(u => u.NombreUsuario == username && u.Clave == clave);
+                .FirstOrDefault(u => u.NombreUsuario == username);
             
             if (usuarioDb == null) return null;
 
