@@ -15,12 +15,15 @@
                 <th>Fecha Reservada</th>
                 <th>Precio Total</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                @if (User.IsInRole("Empresa"))
+                {
+                    <th>Acciones</th>
+                }
             </tr>
         </thead>
         <tbody>
             @if (!Model.Any()) {
-                <tr><td colspan="6" class="text-center">No hay reservas para mostrar.</td></tr>
+                <tr><td colspan="@(User.IsInRole("Empresa") ? 6 : 5)" class="text-center">No hay reservas para mostrar.</td></tr>
             }
             @foreach(var item in Model) {
             <tr>
@@ -29,14 +32,17 @@
                 <td>@item.FechaReserva.ToShortDateString()</td>
                 <td>S/ @item.PrecioTotal.ToString("0.00")</td>
                 <td><span class="badge bg-info">@item.EstadoReserva</span></td>
+                @if (User.IsInRole("Empresa"))
+                {
                 <td>
                     <form asp-action="Confirm" asp-route-id="@item.IdReserva" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-success" @(item.EstadoReserva == "Cancelada" ? "disabled" : "")>Confirmar</button>
+                        <button type="submit" class="btn btn-sm btn-success" @(item.EstadoReserva == "Pendiente" ? "" : "disabled")>Confirmar</button>
                     </form>
                     <form asp-action="Cancel" asp-route-id="@item.IdReserva" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-sm btn-danger">Cancelar</button>
+                        <button type="submit" class="btn btn-sm btn-danger" @(item.EstadoReserva == "Pendiente" ? "" : "disabled")>Cancelar</button>
                     </form>
                 </td>
+                }
             </tr>
             }
         </tbody>

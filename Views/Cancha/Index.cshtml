@@ -7,12 +7,27 @@
     </div>
 }
 
+@if (User.IsInRole("Cliente"))
+{
+    var deportes = Model.Select(c => c.TipoDeporte).Distinct().OrderBy(x => x).ToList();
+    <div class="mb-3">
+        <label for="filtroDeporte" class="form-label fw-bold">Filtrar por tipo de cancha</label>
+        <select id="filtroDeporte" class="form-select">
+            <option value="">Todas</option>
+            @foreach (var d in deportes)
+            {
+                <option value="@d">@d</option>
+            }
+        </select>
+    </div>
+}
+
 @if (Model != null && Model.Any())
 {
     <div class="row">
         @foreach (var cancha in Model)
         {
-            <div class="col-md-4 mb-4">
+            <div class="col-md-4 mb-4 cancha-card" data-deporte="@cancha.TipoDeporte">
                 <div class="card h-100 shadow-sm border-0 border-bottom border-4 @(cancha.Estado == "Disponible" ? "border-success" : "border-warning")">
                     <div class="card-body text-center">
                         <i class="fa-solid fa-futbol fa-3x mb-3 @(cancha.Estado == "Disponible" ? "text-success" : "text-muted")"></i>
@@ -46,4 +61,16 @@
 else
 {
     <div class="alert alert-info">No hay canchas disponibles para mostrar.</div>
+}
+
+@if (User.IsInRole("Cliente"))
+{
+<script>
+document.getElementById("filtroDeporte")?.addEventListener("change", function(){
+  const val=this.value;
+  document.querySelectorAll(".cancha-card").forEach(c=>{
+    c.style.display = !val || c.dataset.deporte===val ? "block" : "none";
+  });
+});
+</script>
 }
