@@ -1,5 +1,12 @@
 @model IEnumerable<SportReserva.Models.DTOs.CanchaDTO>
 
+@if (User.IsInRole("Empresa"))
+{
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-controller="Empresa" asp-action="CrearCancha" class="btn btn-success">Nueva cancha</a>
+    </div>
+}
+
 @if (Model != null && Model.Any())
 {
     <div class="row">

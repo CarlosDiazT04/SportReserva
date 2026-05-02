@@ -7,6 +7,8 @@ namespace SportReserva.Models.Mappers
     {
         public static PagoDTO ToDTO(Pago pago)
         {
+            if (pago == null) return null;
+
             return new PagoDTO
             {
                 IdPago = pago.IdPago,
@@ -20,6 +22,8 @@ namespace SportReserva.Models.Mappers
 
         public static Pago ToEntity(PagoDTO pagoDTO)
         {
+            if (pagoDTO == null) return null;
+
             return new Pago
             {
                 IdPago = pagoDTO.IdPago,
