@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
@@ -15,13 +15,15 @@ namespace SportReserva.Controllers
         private readonly ICanchaService _canchaService;
         private readonly IHorarioService _horarioService;
         private readonly IEmpresaService _empresaService;
+        private readonly IClienteService _clienteService;
 
-        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioService horarioService, IEmpresaService empresaService)
+        public ReservaController(IReservaService reservaService, ICanchaService canchaService, IHorarioService horarioService, IEmpresaService empresaService, IClienteService clienteService)
         {
             _reservaService = reservaService;
             _canchaService = canchaService;
             _horarioService = horarioService;
             _empresaService = empresaService;
+            _clienteService = clienteService;
         }
 
         public async Task<IActionResult> Index()
@@ -187,10 +189,18 @@ namespace SportReserva.Controllers
 
         [Authorize(Roles = "Empresa")]
         [HttpPost]
-        public IActionResult BloquearSlot(int idCancha, DateTime fecha, int idHorario)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BloquearSlot(int idCancha, DateTime fecha, int idHorario)
         {
             try 
             {
+                var clientes = await _clienteService.ObtenerTodosAsync();
+                var clienteSistema = clientes.FirstOrDefault();
+                if (clienteSistema == null)
+                {
+                    return BadRequest("No existe un cliente registrado para registrar bloqueos de horarios.");
+                }
+
                 var bloqueo = new ReservaDTO
                 {
                     IdCancha = idCancha,
@@ -199,7 +209,7 @@ namespace SportReserva.Controllers
                     FechaRegistro = DateTime.Now,
                     EstadoReserva = "Bloqueada",
                     PrecioTotal = 0,
-                    IdCliente = 1
+                    IdCliente = clienteSistema.IdCliente
                 };
 
                 _reservaService.Agregar(bloqueo);

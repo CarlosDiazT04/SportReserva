@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.AspNetCore.Authentication;
+﻿﻿﻿﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -113,6 +113,14 @@ namespace SportReserva.Controllers
                 return RedirectToAction("Index"); 
             }
             return View(dto);
+        }
+
+
+        [HttpGet]
+        public IActionResult Forbidden(string? returnUrl = null)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
 
         [HttpGet, HttpPost]

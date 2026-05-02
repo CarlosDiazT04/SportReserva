@@ -19,7 +19,7 @@ namespace SportReserva.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("Admin"))
+            if (User.IsInRole("Admin") || User.IsInRole("Cliente"))
             {
                 var todasLasCanchas = _canchaService.ObtenerTodas();
                 return View(todasLasCanchas);
