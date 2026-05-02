@@ -1,0 +1,11 @@
+@model IEnumerable<SportReserva.Models.DTOs.CanchaDTO>
+@{
+    ViewData["Title"] = "Mis Canchas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Mis canchas</h2>
+    <a asp-action="CrearCancha" class="btn btn-success">Nueva cancha</a>
+</div>
+
+@await Html.PartialAsync("~/Views/Cancha/Index.cshtml", Model)
