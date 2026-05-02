@@ -10,16 +10,16 @@
 
     <div class="table-responsive mt-4">
         <table class="table table-hover table-bordered shadow-sm bg-white">
-            <tdhead class="table-dark">
+            <thead class="table-dark">
                 <tr>
                     <th>Nro. Reserva</th>
-                    <th>Cancha (ID)</th>
+                    <th>Cancha</th>
                     <th>Fecha Reservada</th>
-                    <th>Horario (ID)</th>
+                    <th>Horario</th>
                     <th>Total (S/)</th>
                     <th>Estado</th>
                 </tr>
-            </tdhead>
+            </thead>
             <tbody>
                 @if (!Model.Any())
                 {
@@ -33,9 +33,9 @@
                     {
                         <tr>
                             <td class="fw-bold">#@reserva.IdReserva</td>
-                            <td>Cancha @reserva.IdCancha</td>
+                            <td>@(string.IsNullOrWhiteSpace(reserva.CanchaNombre) ? $"Cancha #{reserva.IdCancha}" : reserva.CanchaNombre)</td>
                             <td>@reserva.FechaReserva.ToShortDateString()</td>
-                            <td>Turno @reserva.IdHorario</td>
+                            <td>@(string.IsNullOrWhiteSpace(reserva.HorarioTexto) ? $"Turno #{reserva.IdHorario}" : reserva.HorarioTexto)</td>
                             <td>S/ @reserva.PrecioTotal.ToString("0.00")</td>
                             <td><span class="badge @(reserva.EstadoReserva == "Pendiente" ? "bg-warning text-dark" : (reserva.EstadoReserva == "Confirmada" ? "bg-success" : "bg-danger"))">@reserva.EstadoReserva</span></td>
                         </tr>

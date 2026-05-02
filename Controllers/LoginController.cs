@@ -115,6 +115,14 @@ namespace SportReserva.Controllers
             return View(dto);
         }
 
+
+        [HttpGet]
+        public IActionResult Forbidden(string? returnUrl = null)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
         [HttpGet, HttpPost]
         public async Task<IActionResult> Salir()
         {

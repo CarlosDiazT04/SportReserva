@@ -53,6 +53,8 @@ namespace SportReserva.Repositories.Implementations
         {
             return _context.Reservas
                 .Where(r => r.IdCliente == clienteId)
+                .Include(r => r.Cancha)
+                .Include(r => r.Horario)
                 .Select(r => new ReservaDTO
                 {
                     IdReserva = r.IdReserva,
@@ -62,7 +64,9 @@ namespace SportReserva.Repositories.Implementations
                     FechaReserva = r.FechaReserva,
                     FechaRegistro = r.FechaRegistro,
                     PrecioTotal = r.PrecioTotal,
-                    EstadoReserva = r.EstadoReserva
+                    EstadoReserva = r.EstadoReserva,
+                    CanchaNombre = r.Cancha != null ? r.Cancha.Nombre : string.Empty,
+                    HorarioTexto = r.Horario != null ? $"{r.Horario.HoraInicio:hh\:mm} - {r.Horario.HoraFin:hh\:mm}" : string.Empty
                 }).ToList();
         }
 
@@ -70,7 +74,8 @@ namespace SportReserva.Repositories.Implementations
         {
             return _context.Reservas
                 .Include(r => r.Cancha) 
-                .Where(r => r.Cancha.EmpresaId == empresaId)
+                .Include(r => r.Horario)
+                .Where(r => r.Cancha != null && r.Cancha.EmpresaId == empresaId)
                 .Select(r => new ReservaDTO 
                 { 
                     IdReserva = r.IdReserva,
@@ -80,7 +85,9 @@ namespace SportReserva.Repositories.Implementations
                     FechaReserva = r.FechaReserva,
                     FechaRegistro = r.FechaRegistro,
                     PrecioTotal = r.PrecioTotal,
-                    EstadoReserva = r.EstadoReserva
+                    EstadoReserva = r.EstadoReserva,
+                    CanchaNombre = r.Cancha != null ? r.Cancha.Nombre : string.Empty,
+                    HorarioTexto = r.Horario != null ? $"{r.Horario.HoraInicio:hh\:mm} - {r.Horario.HoraFin:hh\:mm}" : string.Empty
                 })
                 .ToList();
         }
@@ -104,7 +111,10 @@ namespace SportReserva.Repositories.Implementations
         
         public IEnumerable<ReservaDTO> ObtenerTodas()
         {
-            return _context.Reservas.Select(r => new ReservaDTO
+            return _context.Reservas
+                .Include(r => r.Cancha)
+                .Include(r => r.Horario)
+                .Select(r => new ReservaDTO
             {
                 IdReserva = r.IdReserva,
                 IdCliente = r.IdCliente,
@@ -113,7 +123,9 @@ namespace SportReserva.Repositories.Implementations
                 FechaReserva = r.FechaReserva,
                 FechaRegistro = r.FechaRegistro,
                 PrecioTotal = r.PrecioTotal,
-                EstadoReserva = r.EstadoReserva
+                EstadoReserva = r.EstadoReserva,
+                CanchaNombre = r.Cancha != null ? r.Cancha.Nombre : string.Empty,
+                HorarioTexto = r.Horario != null ? $"{r.Horario.HoraInicio:hh\:mm} - {r.Horario.HoraFin:hh\:mm}" : string.Empty
             }).ToList();
         }
 
