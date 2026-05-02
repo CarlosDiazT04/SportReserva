@@ -18,8 +18,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="TipoDeporte" class="form-label fw-bold"></label>
-                    <input asp-for="TipoDeporte" class="form-control" />
+                    <label asp-for="TipoDeporte" class="form-label fw-bold">Tipo de Deporte</label>
+                    <select asp-for="TipoDeporte" class="form-select">
+                        <option value="">-- Selecciona un tipo --</option>
+                        @foreach (var tipo in (IEnumerable<string>)ViewBag.TiposDeporte)
+                        {
+                            <option value="@tipo">@tipo</option>
+                        }
+                    </select>
                     <span asp-validation-for="TipoDeporte" class="text-danger"></span>
                 </div>
 
