@@ -1,7 +1,7 @@
 using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 
-namespace SportReserva.Mappers
+namespace SportReserva.Models.Mappers
 {
     public static class CanchaMapper
     {

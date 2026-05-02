@@ -1,4 +1,4 @@
-﻿using SportReserva.Models.DTOs;
+using SportReserva.Models.DTOs;
 using SportReserva.Models.Entities;
 
 namespace SportReserva.Models.Mappers
@@ -7,6 +7,8 @@ namespace SportReserva.Models.Mappers
     {
         public static ClienteDTO ToDTO(Cliente cliente)
         {
+            if (cliente == null) return null;
+
             return new ClienteDTO
             {
                 IdCliente = cliente.IdCliente,
@@ -21,6 +23,8 @@ namespace SportReserva.Models.Mappers
 
         public static Cliente ToEntity(ClienteDTO clienteDTO)
         {
+            if (clienteDTO == null) return null;
+
             return new Cliente
             {
                 IdCliente = clienteDTO.IdCliente,
