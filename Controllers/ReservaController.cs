@@ -60,17 +60,27 @@ namespace SportReserva.Controllers
             return Forbid();
         }
 
+        [Authorize(Roles = "Empresa")]
         [HttpPost]
         public IActionResult Confirm(int id)
         {
-            _reservaService.ActualizarEstado(id, "Confirmada");
+            var reserva = _reservaService.ObtenerTodas().FirstOrDefault(r => r.IdReserva == id);
+            if (reserva != null && reserva.EstadoReserva == "Pendiente")
+            {
+                _reservaService.ActualizarEstado(id, "Confirmada");
+            }
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Empresa")]
         [HttpPost]
         public IActionResult Cancel(int id)
         {
-            _reservaService.ActualizarEstado(id, "Cancelada");
+            var reserva = _reservaService.ObtenerTodas().FirstOrDefault(r => r.IdReserva == id);
+            if (reserva != null && reserva.EstadoReserva == "Pendiente")
+            {
+                _reservaService.ActualizarEstado(id, "Cancelada");
+            }
             return RedirectToAction(nameof(Index));
         }
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
@@ -9,16 +9,20 @@ namespace SportReserva.Controllers
     public class ClienteController : Controller
     {
         private readonly IClienteService _clienteService;
+        private readonly IEmpresaService _empresaService;
 
-        public ClienteController(IClienteService clienteService)
+        public ClienteController(IClienteService clienteService, IEmpresaService empresaService)
         {
             _clienteService = clienteService;
+            _empresaService = empresaService;
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var clientes = await _clienteService.ObtenerTodosAsync();
+            var empresas = await _empresaService.ObtenerTodasAsync();
+            ViewBag.TotalEmpresas = empresas.Count();
             return View(clientes);
         }
 

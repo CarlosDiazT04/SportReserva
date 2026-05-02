@@ -27,7 +27,7 @@ namespace SportReserva.Repositories.Implementations
                 .Select(r => new ReporteReservaDTO
                 {
                     IdReserva = r.IdReserva,
-                    Cliente = r.Cliente != null ? $"{r.Cliente.Nombres} {r.Cliente.Apellidos}" : "Sin cliente",
+                    Cliente = r.EstadoReserva == "Bloqueada" ? "Bloqueo de Empresa" : (r.Cliente != null ? $"{r.Cliente.Nombres} {r.Cliente.Apellidos}" : "Sin cliente"),
                     Cancha = r.Cancha != null ? r.Cancha.Nombre : "Sin cancha",
                     TipoDeporte = r.Cancha != null ? r.Cancha.TipoDeporte : "N/A",
                     FechaReserva = r.FechaReserva,
@@ -35,7 +35,7 @@ namespace SportReserva.Repositories.Implementations
                     HoraFin = r.Horario != null ? r.Horario.HoraFin : default,
                     PrecioTotal = r.PrecioTotal,
                     EstadoReserva = r.EstadoReserva,
-                    EstadoPago = r.Pago != null ? r.Pago.EstadoPago : "Pendiente"
+                    EstadoPago = r.EstadoReserva == "Bloqueada" ? "No aplica" : (r.Pago != null ? r.Pago.EstadoPago : "Pendiente")
                 })
                 .ToList();
         }

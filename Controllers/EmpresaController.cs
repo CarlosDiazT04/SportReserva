@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
+using SportReserva.Models.Catalogs;
 using SportReserva.Services;
 using System.Security.Claims;
 
@@ -44,6 +45,7 @@ namespace SportReserva.Controllers
 
         public IActionResult CrearCancha()
         {
+            ViewBag.TiposDeporte = TipoDeporteCatalog.Tipos;
             return View(new CanchaDTO());
         }
 
@@ -51,8 +53,14 @@ namespace SportReserva.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CrearCancha(CanchaDTO canchaDTO)
         {
+            if (!TipoDeporteCatalog.EsValido(canchaDTO.TipoDeporte))
+            {
+                ModelState.AddModelError(nameof(canchaDTO.TipoDeporte), "Selecciona un tipo de deporte válido.");
+            }
+
             if (!ModelState.IsValid)
             {
+                ViewBag.TiposDeporte = TipoDeporteCatalog.Tipos;
                 return View(canchaDTO);
             }
 
