@@ -1,0 +1,24 @@
+@model SportReserva.Models.DTOs.EmpresaDTO
+@{
+    ViewData["Title"] = "Perfil Empresa";
+}
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+        <h2 class="mb-3">@Model.Nombre</h2>
+        <ul class="list-unstyled mb-0">
+            <li><strong>RUC:</strong> @Model.RUC</li>
+            <li><strong>Dirección:</strong> @Model.Direccion</li>
+            <li><strong>Teléfono:</strong> @Model.Telefono</li>
+            <li><strong>Correo:</strong> @Model.Correo</li>
+            @if (!string.IsNullOrWhiteSpace(Model.NumeroBilletera))
+            {
+                <li><strong>Billetera:</strong> @Model.NumeroBilletera</li>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.UrlMapa))
+            {
+                <li><a href="@Model.UrlMapa" target="_blank">Ver ubicación en mapa</a></li>
+            }
+        </ul>
+    </div>
+</div>
