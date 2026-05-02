@@ -1,47 +1,69 @@
-// Controllers/EmpresaController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SportReserva.Models.DTOs;
 using SportReserva.Services;
+using System.Security.Claims;
 
-[Authorize(Roles = "Empresa")]
-public class EmpresaController : Controller
+namespace SportReserva.Controllers
 {
-    private readonly SportReserva.Services.IEmpresaService _empresaService;
-
-    public EmpresaController(IEmpresaService empresaService)
+    [Authorize(Roles = "Empresa")]
+    public class EmpresaController : Controller
     {
-        _empresaService = empresaService;
-    }
+        private readonly IEmpresaService _empresaService;
 
-    public IActionResult MisCanchas()
-    {
-        var idEmpresaClaim = User.Claims.FirstOrDefault(c => c.Type == "IdEmpresa")?.Value;
-        int idEmpresa = int.TryParse(idEmpresaClaim, out int id) ? id : 0;
-
-        var canchas = _empresaService.ObtenerCanchasDeEmpresa(idEmpresa);
-        return View(canchas);
-    }
-
-    public IActionResult CrearCancha()
-    {
-        return View(new CanchaDTO());
-    }
-
-    [HttpPost]
-    public IActionResult CrearCancha(CanchaDTO canchaDTO)
-    {
-        if (ModelState.IsValid)
+        public EmpresaController(IEmpresaService empresaService)
         {
-                var idEmpresaClaim = User.Claims.FirstOrDefault(c => c.Type == "IdEmpresa")?.Value;
-                if (int.TryParse(idEmpresaClaim, out int idEmpresa))
-                {
-                    canchaDTO.EmpresaId = idEmpresa;
-                }
+            _empresaService = empresaService;
+        }
+
+        public async Task<IActionResult> MiPerfil()
+        {
+            var idUsuarioClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(idUsuarioClaim, out var idUsuario))
+            {
+                return Forbid();
+            }
+
+            var empresa = await _empresaService.ObtenerPorUsuarioIdAsync(idUsuario);
+            if (empresa == null)
+            {
+                return NotFound("No se encontró el perfil de empresa para el usuario autenticado.");
+            }
+
+            return View(empresa);
+        }
+
+        public IActionResult MisCanchas()
+        {
+            var idEmpresaClaim = User.Claims.FirstOrDefault(c => c.Type == "IdEmpresa")?.Value;
+            var idEmpresa = int.TryParse(idEmpresaClaim, out var id) ? id : 0;
+
+            var canchas = _empresaService.ObtenerCanchasDeEmpresa(idEmpresa);
+            return View(canchas);
+        }
+
+        public IActionResult CrearCancha()
+        {
+            return View(new CanchaDTO());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CrearCancha(CanchaDTO canchaDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(canchaDTO);
+            }
+
+            var idEmpresaClaim = User.Claims.FirstOrDefault(c => c.Type == "IdEmpresa")?.Value;
+            if (int.TryParse(idEmpresaClaim, out var idEmpresa))
+            {
+                canchaDTO.EmpresaId = idEmpresa;
+            }
 
             _empresaService.AgregarCancha(canchaDTO);
-            return RedirectToAction("MisCanchas");
+            return RedirectToAction(nameof(MisCanchas));
         }
-        return View(canchaDTO);
     }
 }

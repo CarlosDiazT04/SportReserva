@@ -1,21 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-[AllowAnonymous]
-public class HomeController : Controller
+namespace SportReserva.Controllers
 {
-    public IActionResult Index()
+    [AllowAnonymous]
+    public class HomeController : Controller
     {
-        return View();
-    }
+        public IActionResult Index() => View();
 
-    public IActionResult About()
-    {
-        return View();
-    }
+        public IActionResult About() => View();
 
-    public IActionResult Contact()
-    {
-        return View();
+        public IActionResult Contact() => View();
     }
 }
